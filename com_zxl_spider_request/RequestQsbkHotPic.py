@@ -3,7 +3,6 @@
 import datetime
 import hashlib
 import re
-from telnetlib import EC
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By

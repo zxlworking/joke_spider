@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # coding=utf-8
+import platform
+
 from selenium import webdriver
 
 
@@ -11,6 +13,15 @@ class BaseRequest:
     def get_web_content(self, url):
         #chromedriver = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
         chromedriver = "/Users/zxl/Downloads/chromedriver"
+        sysstr = platform.system()
+
+        if sysstr == 'Darwin':
+            chromedriver = "/Users/zxl/Downloads/chromedriver"
+        elif sysstr == 'Windows':
+            chromedriver = "D:\\my_github_workspace\\chromedriver.exe"
+        elif sysstr == 'Linux':
+            chromedriver = "/Users/zxl/Downloads/chromedriver"
+
 
         # 创建chrome参数对象
         opt = webdriver.ChromeOptions()
