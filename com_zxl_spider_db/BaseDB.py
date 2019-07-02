@@ -7,8 +7,8 @@ from mysql.connector import errorcode
 class BaseDB:
     host = 'zxltest.zicp.vip'
     port = '42278'
-    urser_name = "zxlworking"
-    pass_word = "working"
+    urser_name = "***"
+    pass_word = "***"
     db_name = 'joke'
 
     CREATE_TABLE_SQL = ("")
