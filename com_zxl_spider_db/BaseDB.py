@@ -5,10 +5,11 @@ from mysql.connector import errorcode
 
 
 class BaseDB:
-    host = 'zxltest.zicp.vip'
+    host = '103.46.128.20'
+    # host = 'zxltest.zicp.vip'
     port = '42278'
-    urser_name = "***"
-    pass_word = "***"
+    urser_name = "zxlworking"
+    pass_word = "working"
     db_name = 'joke'
 
     CREATE_TABLE_SQL = ("")
@@ -47,7 +48,7 @@ class BaseDB:
 
     def __create_table(self):
         # for name, ddl in CityDB.TABLES.iteritems():
-        print "create table::", self.CREATE_TABLE_SQL
+        print("create table::", self.CREATE_TABLE_SQL)
         try:
             print("Creating table {}: ".format(self.CREATE_TABLE_SQL),)
             cursor.execute(self.CREATE_TABLE_SQL)
@@ -61,7 +62,7 @@ class BaseDB:
             print("OK")
 
     def query(self, sql_str):
-        print "query::", sql_str
+        print("query::", sql_str)
         cursor.execute(sql_str)
         return cursor
 

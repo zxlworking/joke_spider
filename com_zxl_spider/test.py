@@ -1,11 +1,7 @@
 #!/usr/bin/python
 # coding=UTF-8
 import platform
-import sys
-# import mysql.connector
-
-reload(sys)
-sys.setdefaultencoding('utf-8')
+import mysql.connector
 
 if __name__ == "__main__":
     print("test")
@@ -15,8 +11,8 @@ if __name__ == "__main__":
     #                               host='zxltest.zicp.vip',
     #                               port='42278',
     #                               database='mysql')
-    #
+    # print(cnx)
     # cnx.close()
 
     sysstr = platform.system()
-    print sysstr
+    print(sysstr)

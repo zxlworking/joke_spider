@@ -21,16 +21,16 @@ class RequestQsbkTxt(BaseRequest):
         jokeDB = JokeDB()
 
     def parse(self, end_url, index):
-        print "parse::end_url = ", end_url, "::index = ", index
+        print("parse::end_url = ", end_url, "::index = ", index)
 
         driver = self.get_web_content("https://www.qiushibaike.com/" + end_url + str(index))
 
         elem1 = WebDriverWait(driver, 10).until(
             expected_conditions.presence_of_element_located((By.XPATH, '//ul[@class="pagination"]')))
-        print "elem1 = ", elem1
+        print("elem1 = ", elem1)
         elem2 = WebDriverWait(driver, 10).until(
             expected_conditions.presence_of_element_located((By.XPATH, '//div[@class="article block untagged mb15"]')))
-        print "elem2 = ", elem2
+        print("elem2 = ", elem2)
 
         # page_source = driver.page_source
 
@@ -39,9 +39,9 @@ class RequestQsbkTxt(BaseRequest):
         pageListObject = paginationObject.find_elements_by_xpath('.//li')
         for pageItemObject in pageListObject:
             page_index_txt = pageItemObject.text
-            print "pageItemObject::page_index_txt = ", page_index_txt
+            print("pageItemObject::page_index_txt = ", page_index_txt)
             itemFindResult = re.findall(".*?(\d+).*?", page_index_txt)
-            print "pageItemObject::itemFindResult = ", itemFindResult
+            print("pageItemObject::itemFindResult = ", itemFindResult)
             if len(itemFindResult) > 0:
                 if int(itemFindResult[0]) > index:
                     index = int(itemFindResult[0])
@@ -51,12 +51,12 @@ class RequestQsbkTxt(BaseRequest):
                 #     index = int(itemFindResult[0])
                 #     isFindNextPage = True
                 #     break
-        print "parse::isFindNextPage = ", isFindNextPage, "::index = ", index, "::end_url = ",
+        print("parse::isFindNextPage = ", isFindNextPage, "::index = ", index, "::end_url = ",)
 
         hotPicJokeItemPath = '//div[@class="article block untagged mb15"]'
         hotPicJokeItems = driver.find_elements_by_xpath(hotPicJokeItemPath)
 
-        print 'hotPicJokeItems length = ', len(hotPicJokeItems)
+        print('hotPicJokeItems length = ', len(hotPicJokeItems))
 
         for hotPicJokeItem in hotPicJokeItems:
             jokeId = hotPicJokeItem.get_attribute('id')
@@ -77,7 +77,7 @@ class RequestQsbkTxt(BaseRequest):
                 authorGender = authorGenderObject.get_attribute('class')
                 authorAge = authorGenderObject.text
             except NoSuchElementException as e:
-                print e
+                print(e)
 
             contentObject = hotPicJokeItem.find_element_by_xpath('.//div[@class="content"]')
             content = contentObject.text
@@ -88,7 +88,7 @@ class RequestQsbkTxt(BaseRequest):
                 thumbImgObject = thumbObject.find_element_by_xpath('.//img')
                 thumbImgUrl = thumbImgObject.get_attribute('src')
             except NoSuchElementException as e:
-                print e
+                print(e)
 
             statsVoteContent = ''
             statsCommentContent = ''
@@ -99,7 +99,7 @@ class RequestQsbkTxt(BaseRequest):
                     statsVoteObject = statsObject.find_element_by_xpath('.//span[@class="stats-vote"]')
                     statsVoteContent = statsVoteObject.text
                 except NoSuchElementException as e:
-                    print e
+                    print(e)
                 try:
                     statsCommentObject = statsObject.find_element_by_xpath('.//span[@class="stats-comments"]')
                     statsCommentContent = statsCommentObject.find_element_by_xpath(
@@ -107,9 +107,9 @@ class RequestQsbkTxt(BaseRequest):
                     statsCommentDetailUrl = statsCommentObject.find_element_by_xpath(
                         './/a[@class="qiushi_comments"]').get_attribute('href')
                 except NoSuchElementException as e:
-                    print e
+                    print(e)
             except NoSuchElementException as e:
-                print e
+                print(e)
 
             # print authorNickName
             # print authorGender
@@ -141,17 +141,17 @@ class RequestQsbkTxt(BaseRequest):
                 jokeMd5Value)
 
             isExistJokeItem = jokeDB.query_by_md5(jokeMd5Value)
-            print isExistJokeItem
+            print(isExistJokeItem)
             if isExistJokeItem is None:
-                print "not ExistJokeItem"
+                print("not ExistJokeItem")
                 jokeDB.insert_joke(joke_bean)
             else:
-                print "ExistJokeItem"
+                print("ExistJokeItem")
                 driver.close()
                 return
 
-        print "==============end================="
-        print "\n"
+        print("==============end=================")
+        print("\n")
 
         driver.close()
         if not isFindNextPage:
@@ -164,7 +164,7 @@ class RequestQsbkTxt(BaseRequest):
             jokeDB.close_db()
 
     def start_task(self):
-        print "start_task::", 'Now Time::', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print("start_task::", 'Now Time::', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         self.parse("pic/page/", 1)
         self.clas_db()
 
