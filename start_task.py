@@ -4,6 +4,7 @@ import sched
 import time
 
 from com_zxl_spider_request.RequestQsbkHotPic import RequestQsbkTxt
+from com_zxl_spider_request.RequestStarPic import RequestStarPic
 
 s = sched.scheduler(time.time, time.sleep)
 
@@ -20,4 +21,6 @@ def start_qsbk_hot_pic_spider():
 
 
 if __name__ == '__main__':
-    start()
+    # start()
+    request = RequestStarPic()
+    request.request()
