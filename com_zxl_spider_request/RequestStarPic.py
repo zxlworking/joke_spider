@@ -1,16 +1,23 @@
 #!/usr/bin/python
 # coding=utf-8
 import re
-
+from com_zxl_spider_db.StarDB import StarDB
+from com_zxl_spider_data.StarInfoBean import StarInfoBean
 from com_zxl_spider_request.BaseRequest import BaseRequest
 
 
 class RequestStarPic(BaseRequest):
 
+    def __init__(self):
+        global starDB
+        starDB = StarDB()
+
     def request(self):
         driver = self.get_web_content("http://www.mingxing.com/ziliao/index.html")
+        # print(driver.page_source)
         main_object = driver.find_element_by_xpath('//div[@class="t_05"]')
         category_items = main_object.find_elements_by_xpath('.//a')
+
         for category_tem in category_items:
             print('=========================================================\n')
             print(category_tem.text)
@@ -22,7 +29,6 @@ class RequestStarPic(BaseRequest):
         print("category_url::", category_url)
         print("index::", index)
         driver = self.get_web_content("%s?&p=%s" % (category_url, index))
-        # print(driver.page_source)
 
         page_object = driver.find_element_by_xpath('//div[@class="page_starlist"]')
         star_pic_items = page_object.find_elements_by_xpath('.//li')
@@ -30,14 +36,25 @@ class RequestStarPic(BaseRequest):
         print("star_pic_items::", len(star_pic_items))
 
         for star_pic_item in star_pic_items:
+            bean = StarInfoBean()
+
             star_img_object = star_pic_item.find_element_by_xpath('.//img')
             star_img_url = star_img_object.get_attribute('src')
             star_name_object = star_pic_item.find_element_by_xpath('.//h3')
             star_name = star_name_object.text
 
-            print(star_name, "---", star_img_url)
+            star_detail_url = ''
+            star_detail_objects = star_pic_item.find_elements_by_xpath('.//a')
+            if len(star_detail_objects) > 0:
+                star_detail_url = star_detail_objects[0].get_attribute('href')
 
-        last_page_value = 2
+            print(star_name, "---", star_img_url, "---", star_detail_url)
+
+            bean = bean.create_star_info_bean(-1, star_name, star_img_url, star_detail_url, '')
+
+            starDB.insert_star_info(bean)
+
+        last_page_value = 1
         page_bottom_object = driver.find_element_by_xpath('//div[@class="pages"]')
         last_page_bottom_object = page_bottom_object.find_element_by_xpath('//a[@title="末页"]')
         last_page_bottom_content = last_page_bottom_object.get_attribute('href')
@@ -53,7 +70,13 @@ class RequestStarPic(BaseRequest):
             index = index + 1
             self.parse(category_url, index)
 
+    def close_db(self):
+        if starDB is not None:
+            starDB.close_db()
+
 
 if __name__ == "__main__":
     request = RequestStarPic()
     request.request()
+    request.close_db()
+

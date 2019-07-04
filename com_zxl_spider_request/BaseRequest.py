@@ -19,8 +19,8 @@ class BaseRequest:
         elif sys_str == 'Windows':
             chrome_driver = "D:\\my_github_workspace\\chromedriver.exe"
         elif sys_str == 'Linux':
-            chrome_driver = "/Users/zxl/Downloads/chromedriver"
-            # chrome_driver = "/home/mi/下载/chromedriver"
+            # chrome_driver = "/Users/zxl/Downloads/chromedriver"
+            chrome_driver = "/home/mi/下载/chromedriver"
 
         # 创建chrome参数对象
         opt = webdriver.ChromeOptions()

@@ -5,12 +5,14 @@ from mysql.connector import errorcode
 
 
 class BaseDB:
-    host = '103.46.128.20'
+    host = '127.0.0.1'
+    # host = '103.46.128.20'
     # host = 'zxltest.zicp.vip'
-    port = '42278'
-    urser_name = "zxlworking"
-    pass_word = "working"
-    db_name = 'joke'
+    # port = '42278'
+    port = '3306'
+    urser_name = "root"
+    pass_word = "root"
+    db_name = 'star_info'
 
     CREATE_TABLE_SQL = ("")
 
@@ -67,14 +69,17 @@ class BaseDB:
         return cursor
 
     def insert(self, sql_str, param):
+        print("insert::", sql_str)
         cursor.execute(sql_str, param)
         cnx.commit()
 
     def update(self, sql_str):
+        print("update::", sql_str)
         cursor.execute(sql_str)
-        cnx.commit
+        cnx.commit()
 
     def delete(self, sql_str):
+        print("update::", sql_str)
         cursor.execute(sql_str)
         cnx.commit()
 

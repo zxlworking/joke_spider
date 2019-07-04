@@ -159,14 +159,14 @@ class RequestQsbkTxt(BaseRequest):
         else:
             self.parse(end_url, index)
 
-    def clas_db(self):
+    def close_db(self):
         if jokeDB is not None:
             jokeDB.close_db()
 
     def start_task(self):
         print("start_task::", 'Now Time::', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         self.parse("pic/page/", 1)
-        self.clas_db()
+        self.close_db()
 
 
 if __name__ == "__main__":
