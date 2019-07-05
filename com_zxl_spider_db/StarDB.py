@@ -146,6 +146,6 @@ class StarDB(BaseDB):
         return star_info_bean_list
 
     def update_star_face_id(self, star_info_bean):
-        self.query_by_star_id(star_info_bean['id'])
+        # self.query_by_star_id(star_info_bean['id'])
         self.update(self.UPDATE_STAR_FACE_ID % (star_info_bean['face_id'], int(star_info_bean['id'])))
-        self.query_by_star_id(star_info_bean['id'])
+        # self.query_by_star_id(star_info_bean['id'])

@@ -18,9 +18,12 @@ def urllib_download(name, img_url):
     img_path = './image/%s.png' % name
     file_exist = os.path.exists(img_path)
     print('urllib_download', img_path, file_exist)
-    if not file_exist:
-        pathlib.Path(img_path).touch()
-        urlretrieve(img_url, img_path)
+    if file_exist:
+        os.remove(img_path)
+
+    pathlib.Path(img_path).touch()
+    urlretrieve(img_url, img_path)
+
     return img_path
 
 
@@ -28,9 +31,8 @@ if __name__ == "__main__":
     ak = "FIC1EXY74NXMOELTXLZC"
     sk = "1xEplN2aedTj7uhPRbZTxgF09Wt1jU0H3c17Ci7i"
     project_id = "05819bf0a6800f662ff8c0169b5c9fbc"
-    end_point = " https://face.cn-north-1.myhuaweicloud.com"
-    proxy = {"http": "http://127.0.0.1:1234",
-    "https": "http://127.0.0.1:1234"}
+    end_point = "https://face.cn-north-1.myhuaweicloud.com"
+    proxy = {"http": "http://127.0.0.1:1234", "https": "http://127.0.0.1:1234"}
 
     auth_info = AuthInfo(ak=ak, sk=sk, end_point=end_point)
     frs_client = FrsClient(auth_info=auth_info, project_id=project_id)
@@ -50,10 +52,11 @@ if __name__ == "__main__":
     star_info_all_count = starDB.query_all_star_info_count()
     star_info_all_count = int(star_info_all_count[0])
     print("star_info_all_count::", star_info_all_count)
-    star_info_all_count = 1
-    page_size = 1
+    star_info_all_count = 30
+    page_size = 10
     for page in range(math.ceil(star_info_all_count / page_size)):
-        star_info_list = starDB.query_all_star_info(page * page_size, (page + 1) * page_size)
+        print("page::", page)
+        star_info_list = starDB.query_all_star_info((page * page_size), page_size)
         print("star_info_list len::", len(star_info_list))
         for star_info in star_info_list:
             print(star_info)
