@@ -52,7 +52,7 @@ if __name__ == "__main__":
     star_info_all_count = starDB.query_all_star_info_count()
     star_info_all_count = int(star_info_all_count[0])
     print("star_info_all_count::", star_info_all_count)
-    star_info_all_count = 30
+    # star_info_all_count = 30
     page_size = 10
     for page in range(math.ceil(star_info_all_count / page_size)):
         print("page::", page)
@@ -60,6 +60,9 @@ if __name__ == "__main__":
         print("star_info_list len::", len(star_info_list))
         for star_info in star_info_list:
             print(star_info)
+            if star_info['face_id'] != '':
+                print('face_id not empty, continue')
+                continue
 
             img_path = urllib_download(star_info['star_name'], star_info['star_img_url'])
 

@@ -5,13 +5,13 @@ from mysql.connector import errorcode
 
 
 class BaseDB:
-    host = '127.0.0.1'
-    port = '3306'
-    # host = '103.46.128.20'
-    # host = 'zxltest.zicp.vip'
-    # port = '42278'
-    urser_name = "root"
-    pass_word = "root"
+    # host = '127.0.0.1'
+    # port = '3306'
+    # host = '103.46.128.49'
+    host = 'zxltest.zicp.vip'
+    port = '42278'
+    urser_name = ""
+    pass_word = ""
     db_name = 'star_info'
 
     CREATE_TABLE_SQL = ("")

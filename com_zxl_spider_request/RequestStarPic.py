@@ -51,8 +51,9 @@ class RequestStarPic(BaseRequest):
             print(star_name, "---", star_img_url, "---", star_detail_url)
 
             bean = bean.create_star_info_bean(-1, star_name, star_img_url, star_detail_url, '')
-
-            starDB.insert_star_info(bean)
+            find_result = starDB.query_by_star_name(star_name)
+            if find_result is None:
+                starDB.insert_star_info(bean)
 
         last_page_value = 1
         page_bottom_object = driver.find_element_by_xpath('//div[@class="pages"]')

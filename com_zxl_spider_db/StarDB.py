@@ -20,7 +20,7 @@ class StarDB(BaseDB):
     CREATE_TABLE_SQL = (
         "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " ("
         "  " + COLUME_ID + " bigint(20) NOT NULL AUTO_INCREMENT,"
-        "  " + COLUME_STAR_NAME + "  varchar(16),"
+        "  " + COLUME_STAR_NAME + "  text,"
         "  " + COLUME_STAR_IMG_URL + " text,"
         "  " + COLUME_STAR_DETAIL_URL + " text,"
         "  " + COLUME_FACE_ID + " text,"
@@ -80,7 +80,12 @@ class StarDB(BaseDB):
         )
 
     def insert_star_info(self, star_info_bean):
-        self.insert(self.INSERT_STAR_INFO_SQL, self.create_insert_data(star_info_bean))
+        self.insert(self.INSERT_STAR_INFO_SQL, (
+            star_info_bean['star_name'],
+            star_info_bean['star_img_url'],
+            star_info_bean['star_detail_url'],
+            star_info_bean['face_id'],
+        ))
 
     def query_by_star_name(self, star_name):
         cursor = self.query(self.QUERY_STAR_INFO_BY_STAR_NAME % (star_name,))
