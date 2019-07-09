@@ -5,6 +5,7 @@ from urllib.request import urlretrieve
 
 import math
 
+import frscommon
 from com_zxl_spider_db.StarDB import StarDB
 from frsclient import AuthInfo, FrsClient, FaceSetService
 
@@ -22,7 +23,11 @@ def urllib_download(name, img_url):
         os.remove(img_path)
 
     pathlib.Path(img_path).touch()
-    urlretrieve(img_url, img_path)
+
+    try:
+        urlretrieve(img_url, img_path)
+    except Exception as e:
+        print("urllib_download::Exception::", e)
 
     return img_path
 
@@ -66,18 +71,21 @@ if __name__ == "__main__":
 
             img_path = urllib_download(star_info['star_name'], star_info['star_img_url'])
 
-            result = face_service.add_face_by_file('zxl_test_1', img_path)
-            result = result.get_eval_result()
-            print("add_face_by_file result::", result)
+            try:
+                result = face_service.add_face_by_file('zxl_test_1', img_path)
+                result = result.get_eval_result()
+                print("add_face_by_file result::", result)
 
-            result_face = result['faces']
-            if len(result_face) > 0:
-                face_id = result_face[0]['face_id']
-                print('face_id::', face_id)
-                star_info['face_id'] = face_id
-                starDB.update_star_face_id(star_info)
+                result_face = result['faces']
+                if len(result_face) > 0:
+                    face_id = result_face[0]['face_id']
+                    print('face_id::', face_id)
+                    star_info['face_id'] = face_id
+                    starDB.update_star_face_id(star_info)
 
-            os.remove(img_path)
+                os.remove(img_path)
+            except frscommon.frs_exception.FrsException as e:
+                print("FrsException::", e)
 
     starDB.close_db()
 

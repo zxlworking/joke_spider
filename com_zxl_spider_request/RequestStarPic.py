@@ -10,7 +10,7 @@ class RequestStarPic(BaseRequest):
 
     def __init__(self):
         global starDB
-        starDB = StarDB()
+        # starDB = StarDB()
 
     def request(self):
         driver = self.get_web_content("http://www.mingxing.com/ziliao/index.html")
@@ -70,6 +70,15 @@ class RequestStarPic(BaseRequest):
         else:
             index = index + 1
             self.parse(category_url, index)
+
+    def request2(self):
+        driver = self.get_web_content("https://m.houyuantuan.com/mingxing/")
+        print(driver.page_source)
+        driver = self.get_web_content("https://www.houyuantuan.com/star/aindex/?id=&page=2")
+        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+        print(driver.page_source)
+
+        driver.close()
 
     def close_db(self):
         if starDB is not None:
