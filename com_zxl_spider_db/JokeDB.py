@@ -53,6 +53,8 @@ class JokeDB(BaseDB):
                                                      + ") "
                                                      + "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
+    DELETE_JOKE_SQL = ("DELETE FROM " + TABLE_NAME)
+
     QUERY_JOKE_BY_MD5 = ("SELECT "
                          + COLUME_AUTHOR_NICK_NAME + ","
                          + COLUME_AUTHOR_GENDER + ","
@@ -83,6 +85,9 @@ class JokeDB(BaseDB):
 
     def insert_joke(self, joke_bean):
         self.insert(self.INSERT_JOKE_SQL, self.create_insert_data(joke_bean))
+
+    def delete_joke(self):
+        self.delete(self.DELETE_JOKE_SQL)
 
     def query_by_md5(self, md5):
         cursor = self.query(self.QUERY_JOKE_BY_MD5 % (md5,))
