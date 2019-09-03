@@ -37,7 +37,7 @@ class JokeDB(BaseDB):
         "  " + COLUME_STATS_COMMENT_DETAIL_URL + " text,"
         "  " + COLUME_MD5 + " text,"
         "  PRIMARY KEY (" + COLUME_ID + ")"
-        ") ENGINE=InnoDB")
+        ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci")
 
     INSERT_JOKE_SQL = ("INSERT INTO " + TABLE_NAME + " ("
                                                      + COLUME_AUTHOR_NICK_NAME + ","

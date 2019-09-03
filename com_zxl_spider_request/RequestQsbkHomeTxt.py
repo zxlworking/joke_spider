@@ -2,16 +2,12 @@
 # coding=utf-8
 import datetime
 import hashlib
-import re
 
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions
 
+from com_zxl_spider_data.JokeBean import *
 from com_zxl_spider_db.JokeDB import JokeDB
 from com_zxl_spider_request.BaseRequest import *
-from com_zxl_spider_data.JokeBean import *
 
 
 class RequestQsbkHomeTxt(BaseRequest):

@@ -20,7 +20,7 @@ class BaseDB:
         global cnx
         global cursor
         try:
-            cnx = mysql.connector.connect(user=self.urser_name, password=self.pass_word, host=self.host, port=self.port, database=self.db_name)
+            cnx = mysql.connector.connect(user=self.urser_name, password=self.pass_word, host=self.host, port=self.port, database=self.db_name, charset="utf8mb4")
             cursor = cnx.cursor()
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -41,7 +41,7 @@ class BaseDB:
 
     def __create_database(self):
         try:
-            cursor.execute("CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(self.db_name))
+            cursor.execute("CREATE DATABASE {} default character set utf8mb4 collate utf8mb4_unicode_ci".format(self.db_name))
             cnx.database = self.db_name
             print("Create database finish")
         except mysql.connector.Error as err:

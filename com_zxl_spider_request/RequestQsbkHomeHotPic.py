@@ -19,42 +19,16 @@ class RequestQsbkTxt(BaseRequest):
     def __init__(self):
         global jokeDB
         jokeDB = JokeDB()
-        # jokeDB.delete_joke()
+        jokeDB.delete_joke()
 
-    def parse(self, end_url, index):
-        print("parse::end_url = ", end_url, "::index = ", index)
+    def parse(self, end_url):
+        print("parse::end_url = ", end_url)
 
-        driver = self.get_web_content("https://www.qiushibaike.com/" + end_url + str(index))
-
-        elem1 = WebDriverWait(driver, 10).until(
-            expected_conditions.presence_of_element_located((By.XPATH, '//ul[@class="pagination"]')))
-        print("elem1 = ", elem1)
-        elem2 = WebDriverWait(driver, 10).until(
-            expected_conditions.presence_of_element_located((By.XPATH, '//div[@class="article block untagged mb15"]')))
-        print("elem2 = ", elem2)
+        driver = self.get_web_content("https://www.qiushibaike.com/" + end_url)
 
         # page_source = driver.page_source
 
-        isFindNextPage = False
-        paginationObject = driver.find_element_by_xpath('//ul[@class="pagination"]')
-        pageListObject = paginationObject.find_elements_by_xpath('.//li')
-        for pageItemObject in pageListObject:
-            page_index_txt = pageItemObject.text
-            print("pageItemObject::page_index_txt = ", page_index_txt)
-            itemFindResult = re.findall(".*?(\d+).*?", page_index_txt)
-            print("pageItemObject::itemFindResult = ", itemFindResult)
-            if len(itemFindResult) > 0:
-                if int(itemFindResult[0]) > index:
-                    index = int(itemFindResult[0])
-                    isFindNextPage = True
-                    break
-                # if index - int(itemFindResult[0]) == 1:
-                #     index = int(itemFindResult[0])
-                #     isFindNextPage = True
-                #     break
-        print("parse::isFindNextPage = ", isFindNextPage, "::index = ", index, "::end_url = ",)
-
-        hotPicJokeItemPath = '//div[@class="article block untagged mb15"]'
+        hotPicJokeItemPath = "//div[starts-with(@class,'article block untagged mb15')]"
         hotPicJokeItems = driver.find_elements_by_xpath(hotPicJokeItemPath)
 
         print('hotPicJokeItems length = ', len(hotPicJokeItems))
@@ -116,7 +90,6 @@ class RequestQsbkTxt(BaseRequest):
             print(authorGender)
             print(authorAge)
             print(authorImgUrl)
-            # 网友是怎么找到他爸爸的😂
             print(content)
             print(thumbImgUrl)
             print(statsVoteContent)
@@ -156,10 +129,6 @@ class RequestQsbkTxt(BaseRequest):
         print("\n")
 
         driver.close()
-        if not isFindNextPage:
-            return
-        else:
-            self.parse(end_url, index)
 
     def close_db(self):
         if jokeDB is not None:
@@ -167,13 +136,12 @@ class RequestQsbkTxt(BaseRequest):
 
     def start_task(self):
         print("start_task::", 'Now Time::', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        self.parse("pic/page/", 1)
+        self.parse("imgrank")
         self.close_db()
 
 
 if __name__ == "__main__":
     request = RequestQsbkTxt()
-    # request.parse("pic/page/", 1)
-    request.parse("pic/page/", 1)
+    request.parse("imgrank")
 
     request.close_db()
