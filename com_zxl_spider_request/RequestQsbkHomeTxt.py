@@ -6,7 +6,7 @@ import hashlib
 from selenium.common.exceptions import NoSuchElementException
 
 from com_zxl_spider_data.JokeBean import *
-from com_zxl_spider_db.JokeDB import JokeDB
+from com_zxl_spider_db import TxtJokeDB
 from com_zxl_spider_request.BaseRequest import *
 
 
@@ -14,8 +14,8 @@ class RequestQsbkHomeTxt(BaseRequest):
 
     def __init__(self):
         global jokeDB
-        jokeDB = JokeDB()
-        # jokeDB.delete_joke()
+        jokeDB = TxtJokeDB()
+        jokeDB.delete_joke()
 
     def parse(self, url_path):
         print("parse::url_path = ", url_path)
@@ -101,6 +101,7 @@ class RequestQsbkHomeTxt(BaseRequest):
 
             joke_bean = JokeBean()
             joke_bean = joke_bean.create_joke_bean(
+                "",
                 author_nick_name.encode('utf-8'),
                 author_gender,
                 author_age,

@@ -14,7 +14,7 @@ from com_zxl_spider_request.BaseRequest import *
 from com_zxl_spider_data.JokeBean import *
 
 
-class RequestQsbkTxt(BaseRequest):
+class RequestQsbkHotPic(BaseRequest):
 
     def __init__(self):
         global jokeDB
@@ -131,6 +131,7 @@ class RequestQsbkTxt(BaseRequest):
 
             joke_bean = JokeBean()
             joke_bean = joke_bean.create_joke_bean(
+                "",
                 authorNickName.encode('utf-8'),
                 authorGender,
                 authorAge,
@@ -172,7 +173,7 @@ class RequestQsbkTxt(BaseRequest):
 
 
 if __name__ == "__main__":
-    request = RequestQsbkTxt()
+    request = RequestQsbkHotPic()
     # request.parse("pic/page/", 1)
     request.parse("pic/page/", 1)
 

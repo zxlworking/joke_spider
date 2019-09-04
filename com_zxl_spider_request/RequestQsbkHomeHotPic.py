@@ -2,23 +2,21 @@
 # coding=utf-8
 import datetime
 import hashlib
-import re
 
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions
 
-from com_zxl_spider_db.JokeDB import JokeDB
+from com_zxl_spider_db.HotPicJokeDB import *
 from com_zxl_spider_request.BaseRequest import *
-from com_zxl_spider_data.JokeBean import *
+from com_zxl_spider_request.RequestQsbkHotPicDetail import RequestQsbkHotPicDetail
 
 
-class RequestQsbkTxt(BaseRequest):
+class RequestQsbkHomeHotPic(BaseRequest):
 
     def __init__(self):
         global jokeDB
-        jokeDB = JokeDB()
+        global requestQsbkHotPicDetail
+        requestQsbkHotPicDetail = RequestQsbkHotPicDetail()
+        jokeDB = HotPicJokeDB()
         jokeDB.delete_joke()
 
     def parse(self, end_url):
@@ -28,104 +26,109 @@ class RequestQsbkTxt(BaseRequest):
 
         # page_source = driver.page_source
 
-        hotPicJokeItemPath = "//div[starts-with(@class,'article block untagged mb15')]"
-        hotPicJokeItems = driver.find_elements_by_xpath(hotPicJokeItemPath)
+        text_joke_item_path = "//div[starts-with(@class,'article block untagged mb15')]"
+        text_joke_items = driver.find_elements_by_xpath(text_joke_item_path)
 
-        print('hotPicJokeItems length = ', len(hotPicJokeItems))
+        print('text_joke_items length = ', len(text_joke_items))
 
-        for hotPicJokeItem in hotPicJokeItems:
-            jokeId = hotPicJokeItem.get_attribute('id')
-            md5Object = hashlib.md5()
-            md5Object.update(jokeId.encode('utf-8'))
-            jokeMd5Value = md5Object.hexdigest()
+        for text_joke_item in text_joke_items:
+            joke_id = text_joke_item.get_attribute('id')
+            md5_object = hashlib.md5()
+            md5_object.update(joke_id.encode('utf-8'))
+            joke_md5_value = md5_object.hexdigest()
 
-            authorObject = hotPicJokeItem.find_element_by_xpath('.//div[@class="author clearfix"]')
-            authorNickObject = authorObject.find_element_by_xpath('.//h2')
-            authorNickName = authorNickObject.text
-            authorImgObject = authorObject.find_element_by_xpath('.//img')
-            authorImgUrl = authorImgObject.get_attribute('src')
+            author_object = text_joke_item.find_element_by_xpath('.//div[@class="author clearfix"]')
+            author_nick_object = author_object.find_element_by_xpath('.//h2')
+            author_nick_name = author_nick_object.text
+            author_img_object = author_object.find_element_by_xpath('.//img')
+            author_img_url = author_img_object.get_attribute('src')
 
-            authorGender = ''
-            authorAge = -1
+            author_gender = ''
+            author_age = -1
             try:
-                authorGenderObject = authorObject.find_element_by_xpath(".//div[starts-with(@class,'articleGender')]")
-                authorGender = authorGenderObject.get_attribute('class')
-                authorAge = authorGenderObject.text
+                author_gender_object = author_object.find_element_by_xpath(
+                    ".//div[starts-with(@class,'articleGender')]")
+                author_gender = author_gender_object.get_attribute('class')
+                author_age = author_gender_object.text
             except NoSuchElementException as e:
                 print(e)
 
-            contentObject = hotPicJokeItem.find_element_by_xpath('.//div[@class="content"]')
-            content = contentObject.text
+            content_object = text_joke_item.find_element_by_xpath('.//div[@class="content"]')
+            content = content_object.text
 
-            thumbImgUrl = ''
+            thumb_img_url = ''
             try:
-                thumbObject = hotPicJokeItem.find_element_by_xpath('.//div[@class="thumb"]')
-                thumbImgObject = thumbObject.find_element_by_xpath('.//img')
-                thumbImgUrl = thumbImgObject.get_attribute('src')
+                thumb_object = text_joke_item.find_element_by_xpath('.//div[@class="thumb"]')
+                thumb_img_object = thumb_object.find_element_by_xpath('.//img')
+                thumb_img_url = thumb_img_object.get_attribute('src')
             except NoSuchElementException as e:
                 print(e)
 
-            statsVoteContent = ''
-            statsCommentContent = ''
-            statsCommentDetailUrl = ''
+            stats_vote_content = ''
+            stats_comment_content = ''
+            stats_comment_detail_url = ''
             try:
-                statsObject = hotPicJokeItem.find_element_by_xpath('.//div[@class="stats"]')
+                stats_object = text_joke_item.find_element_by_xpath('.//div[@class="stats"]')
                 try:
-                    statsVoteObject = statsObject.find_element_by_xpath('.//span[@class="stats-vote"]')
-                    statsVoteContent = statsVoteObject.text
+                    stats_vote_object = stats_object.find_element_by_xpath('.//span[@class="stats-vote"]')
+                    stats_vote_content = stats_vote_object.text
                 except NoSuchElementException as e:
                     print(e)
                 try:
-                    statsCommentObject = statsObject.find_element_by_xpath('.//span[@class="stats-comments"]')
-                    statsCommentContent = statsCommentObject.find_element_by_xpath(
+                    stats_comment_object = stats_object.find_element_by_xpath('.//span[@class="stats-comments"]')
+                    stats_omment_content = stats_comment_object.find_element_by_xpath(
                         './/a[@class="qiushi_comments"]').text
-                    statsCommentDetailUrl = statsCommentObject.find_element_by_xpath(
+                    stats_comment_detail_url = stats_comment_object.find_element_by_xpath(
                         './/a[@class="qiushi_comments"]').get_attribute('href')
                 except NoSuchElementException as e:
                     print(e)
             except NoSuchElementException as e:
                 print(e)
 
-            print(authorNickName)
-            print(authorGender)
-            print(authorAge)
-            print(authorImgUrl)
+            print(author_nick_name)
+            print(author_gender)
+            print(author_age)
+            print(author_img_url)
             print(content)
-            print(thumbImgUrl)
-            print(statsVoteContent)
-            print(statsCommentContent)
-            print(statsCommentDetailUrl)
-            print(jokeId)
-            print(jokeMd5Value)
+            print(thumb_img_url)
+            print(stats_vote_content)
+            print(stats_comment_content)
+            print(stats_comment_detail_url)
+            print(joke_id)
+            print(joke_md5_value)
 
             print('\n')
-            print('======================================hotPicJokeItem end==========================================')
+            print('======================================RequestQsbkHomeHotPic item end==========================================')
             print('\n')
 
             joke_bean = JokeBean()
             joke_bean = joke_bean.create_joke_bean(
-                authorNickName.encode('utf-8'),
-                authorGender,
-                authorAge,
-                authorImgUrl,
+                "",
+                author_nick_name.encode('utf-8'),
+                author_gender,
+                author_age,
+                author_img_url,
                 content.encode('utf-8'),
-                thumbImgUrl,
-                statsVoteContent,
-                statsCommentContent,
-                statsCommentDetailUrl,
-                jokeMd5Value)
+                thumb_img_url,
+                stats_vote_content,
+                stats_comment_content,
+                stats_comment_detail_url,
+                joke_md5_value)
 
-            isExistJokeItem = jokeDB.query_by_md5(jokeMd5Value)
-            print(isExistJokeItem)
-            if isExistJokeItem is None:
+            is_exist_joke_item = jokeDB.query_by_md5(joke_md5_value)
+            print(is_exist_joke_item)
+            if is_exist_joke_item is None:
                 print("not ExistJokeItem")
                 jokeDB.insert_joke(joke_bean)
+
+                requestQsbkHotPicDetail.get_detail(joke_bean["id"], joke_bean["stats_comment_detail_url"])
+
             else:
                 print("ExistJokeItem")
                 driver.close()
                 return
 
-        print("==============end=================")
+        print("==============parse end=================")
         print("\n")
 
         driver.close()
@@ -141,7 +144,7 @@ class RequestQsbkTxt(BaseRequest):
 
 
 if __name__ == "__main__":
-    request = RequestQsbkTxt()
+    request = RequestQsbkHomeHotPic()
     request.parse("imgrank")
 
     request.close_db()
