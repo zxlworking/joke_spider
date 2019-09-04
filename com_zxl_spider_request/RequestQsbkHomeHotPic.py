@@ -121,7 +121,9 @@ class RequestQsbkHomeHotPic(BaseRequest):
                 print("not ExistJokeItem")
                 jokeDB.insert_joke(joke_bean)
 
-                requestQsbkHotPicDetail.get_detail(joke_bean["id"], joke_bean["stats_comment_detail_url"])
+                new_joke_item = jokeDB.query_by_md5(joke_md5_value)
+
+                requestQsbkHotPicDetail.get_detail(new_joke_item["id"], new_joke_item["stats_comment_detail_url"])
 
             else:
                 print("ExistJokeItem")
