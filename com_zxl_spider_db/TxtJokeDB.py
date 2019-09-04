@@ -7,9 +7,9 @@ from com_zxl_spider_data.JokeBean import JokeBean
 from com_zxl_spider_db.BaseDB import BaseDB
 
 
-class JokeDB(BaseDB):
+class TxtJokeDB(BaseDB):
 
-    TABLE_NAME = 'joke'
+    TABLE_NAME = 'txt_joke'
 
     COLUME_ID = 'id'
     COLUME_AUTHOR_NICK_NAME = 'author_nick_name'
