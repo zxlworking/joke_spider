@@ -17,7 +17,7 @@ class RequestQsbkHomeHotPic(BaseRequest):
         global requestQsbkHotPicDetail
         requestQsbkHotPicDetail = RequestQsbkHotPicDetail()
         jokeDB = HotPicJokeDB()
-        jokeDB.delete_joke()
+        # jokeDB.delete_joke()
 
     def parse(self, end_url):
         print("parse::end_url = ", end_url)

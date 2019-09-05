@@ -15,7 +15,7 @@ class RequestQsbkHotPicDetail(BaseRequest):
     def __init__(self):
         global jokeDB
         jokeDB = HotPicJokeDetailDB()
-        jokeDB.delete_joke_detail()
+        # jokeDB.delete_joke_detail()
 
     def parse(self, hot_pic_id, url):
         print("parse::url = ", url)
@@ -31,9 +31,13 @@ class RequestQsbkHotPicDetail(BaseRequest):
         # page_source = driver.page_source
         # print(page_source)
 
-        stats_time_path = '//span[@class="stats-time"]'
-        stats_time_object = driver.find_element_by_xpath(stats_time_path)
-        stats_time = stats_time_object.text
+        stats_time = ''
+        try:
+            stats_time_path = '//span[@class="stats-time"]'
+            stats_time_object = driver.find_element_by_xpath(stats_time_path)
+            stats_time = stats_time_object.text
+        except NoSuchElementException as e:
+            print(e)
 
         content_parent_path = '//div[@class="article block untagged noline"]'
         content_parent_object = driver.find_element_by_xpath(content_parent_path)
