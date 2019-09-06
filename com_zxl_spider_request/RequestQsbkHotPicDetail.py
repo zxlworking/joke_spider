@@ -7,6 +7,7 @@ from selenium.common.exceptions import NoSuchElementException
 
 from com_zxl_spider_data.JokeDetailBean import JokeDetailBean
 from com_zxl_spider_db.HotPicJokeDetailDB import HotPicJokeDetailDB
+from com_zxl_spider_db.HotPicJokeDetailErrorDB import HotPicJokeDetailErrorDB
 from com_zxl_spider_request.BaseRequest import *
 
 
@@ -14,10 +15,13 @@ class RequestQsbkHotPicDetail(BaseRequest):
 
     def __init__(self):
         global jokeDB
+        global jokeDetailErrorDB
         jokeDB = HotPicJokeDetailDB()
+        jokeDetailErrorDB = HotPicJokeDetailErrorDB()
         # jokeDB.delete_joke_detail()
 
     def parse(self, hot_pic_id, url):
+        print("parse::hot_pic_id = ", hot_pic_id)
         print("parse::url = ", url)
 
         article_id = -1
@@ -31,43 +35,54 @@ class RequestQsbkHotPicDetail(BaseRequest):
         # page_source = driver.page_source
         # print(page_source)
 
-        stats_time = ''
         try:
             stats_time_path = '//span[@class="stats-time"]'
             stats_time_object = driver.find_element_by_xpath(stats_time_path)
             stats_time = stats_time_object.text
-        except NoSuchElementException as e:
-            print(e)
 
-        content_parent_path = '//div[@class="article block untagged noline"]'
-        content_parent_object = driver.find_element_by_xpath(content_parent_path)
+            content_parent_path = '//div[@class="article block untagged noline"]'
+            content_parent_object = driver.find_element_by_xpath(content_parent_path)
 
-        content_object = content_parent_object.find_element_by_xpath('.//div[@class="content"]')
-        content = content_object.text
+            content_object = content_parent_object.find_element_by_xpath('.//div[@class="content"]')
+            content = content_object.text
 
-        thumb_img_url = ''
-        try:
             thumb_object = content_parent_object.find_element_by_xpath('.//div[@class="thumb"]')
             thumb_img_object = thumb_object.find_element_by_xpath('.//img')
             thumb_img_url = thumb_img_object.get_attribute('src')
+
+            print(article_id)
+            print(stats_time)
+            print(content)
+            print(thumb_img_url)
+
+            jokeDetailBean = JokeDetailBean()
+            jokeDetailBean = jokeDetailBean.create_joke_detail_bean(
+                "",
+                hot_pic_id,
+                article_id,
+                stats_time,
+                content,
+                thumb_img_url
+            )
+
+            jokeDB.delete_joke_detail_by_hot_pic_id(hot_pic_id)
+            jokeDB.insert_joke_detail(jokeDetailBean)
+            jokeDetailErrorDB.delete_joke_detail_by_hot_pic_id(hot_pic_id)
         except NoSuchElementException as e:
             print(e)
 
-        print(article_id)
-        print(stats_time)
-        print(content)
-        print(thumb_img_url)
+            jokeDetailBean = JokeDetailBean()
+            jokeDetailBean = jokeDetailBean.create_joke_detail_bean(
+                "",
+                hot_pic_id,
+                article_id,
+                '',
+                '',
+                ''
+            )
+            jokeDetailErrorDB.delete_joke_detail_by_hot_pic_id(hot_pic_id)
+            jokeDetailErrorDB.insert_joke_detail(jokeDetailBean)
 
-        jokeDetailBean = JokeDetailBean()
-        jokeDetailBean = jokeDetailBean.create_joke_detail_bean(
-            "",
-            hot_pic_id,
-            article_id,
-            stats_time,
-            content,
-            thumb_img_url
-        )
-        jokeDB.insert_joke_detail(jokeDetailBean)
 
         driver.close()
 

@@ -6,6 +6,7 @@ import hashlib
 from selenium.common.exceptions import NoSuchElementException
 
 from com_zxl_spider_db.HotPicJokeDB import *
+from com_zxl_spider_db.HotPicJokeDetailErrorDB import HotPicJokeDetailErrorDB
 from com_zxl_spider_request.BaseRequest import *
 from com_zxl_spider_request.RequestQsbkHotPicDetail import RequestQsbkHotPicDetail
 
@@ -15,8 +16,10 @@ class RequestQsbkHomeHotPic(BaseRequest):
     def __init__(self):
         global jokeDB
         global requestQsbkHotPicDetail
+        global jokeDetailErrorDB
         requestQsbkHotPicDetail = RequestQsbkHotPicDetail()
         jokeDB = HotPicJokeDB()
+        jokeDetailErrorDB = HotPicJokeDetailErrorDB()
         # jokeDB.delete_joke()
 
     def parse(self, end_url):
@@ -127,6 +130,12 @@ class RequestQsbkHomeHotPic(BaseRequest):
 
             else:
                 print("ExistJokeItem")
+
+                jokeDetailBeanList = jokeDetailErrorDB.query_all()
+                if jokeDetailBeanList is not None:
+                    for jokeDetailBean in jokeDetailBeanList:
+                        requestQsbkHotPicDetail.get_detail(jokeDetailBean["hot_pic_id"], "https://www.qiushibaike.com/article/" + jokeDetailBean["article_id"])
+
                 driver.close()
                 return
 
