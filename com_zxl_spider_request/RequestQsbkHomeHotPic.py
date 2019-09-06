@@ -79,7 +79,7 @@ class RequestQsbkHomeHotPic(BaseRequest):
                     print(e)
                 try:
                     stats_comment_object = stats_object.find_element_by_xpath('.//span[@class="stats-comments"]')
-                    stats_omment_content = stats_comment_object.find_element_by_xpath(
+                    stats_comment_content = stats_comment_object.find_element_by_xpath(
                         './/a[@class="qiushi_comments"]').text
                     stats_comment_detail_url = stats_comment_object.find_element_by_xpath(
                         './/a[@class="qiushi_comments"]').get_attribute('href')
