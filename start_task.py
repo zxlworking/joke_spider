@@ -20,6 +20,6 @@ def start_qsbk_hot_pic_spider():
 
 
 if __name__ == '__main__':
-    # start()
-    request = RequestQsbkHomeHotPic()
-    request.request()
+    start()
+    # request = RequestQsbkHomeHotPic()
+    # request.start_task()
