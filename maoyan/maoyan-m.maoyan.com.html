@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html class=" android">
+<head>
+  <meta charset="utf-8"/>
+  <link href="//p0.meituan.net" rel="dns-prefetch">
+  <link href="//p1.meituan.net" rel="dns-prefetch">
+  <link href="//mc.meituan.net" rel="dns-prefetch">
+
+<link rel="dns-prefetch" href="//analytics.meituan.net" />
+<link rel="dns-prefetch" href="//h5.dianping.com" />
+  
+  <title>猫眼电影</title>
+  <meta name="description" content='每天团购一次，精品消费指南'>
+  <meta name="keywords" content='每天团购一次，精品消费指南'>
+  <meta name="applicable-device" content="mobile">
+  <!--// apple Smart App Banner -->
+  <meta name="apple-itunes-app" content="app-id=504274740, app-argument=meituanmovie://www.meituan.com/">
+  
+    <meta http-equiv="Content-Security-Policy" content="default-src js://* wx.qlogo.cn thirdwx.qlogo.cn *.tanx.com *.mmstat.com *.meituan.com *.sankuai.com *.wandafilm.com https://i.meituan.com/ https://m.dianping.com/ https://ms0.meituan.com https://mc0.meituan.com https://mpay.meituan.com 192.168.4.223:9999 *.maoyan.com https://*.meituan.com https://*.sankuai.com https://*.meituan.net http://*.meituan.net www.google-analytics.com wvjbscheme://* imeituan://* *.dianping.com *.dpfile.com *.51ping.com mymonitor.movie.dev.sankuai.com http://res.wx.qq.com https://res.wx.qq.com open.weixin.qq.com pub.idqqimg.com *.qianbao.qq.com *.qq.com c.mipcdn.com *.baidu.com wx.tenpay.com *.gtimg.cn validate-ocean.sankuai.com open.95516.com jsbridge://* 'self' 'unsafe-inline' 'unsafe-eval' mqqapi://* blob: gap: data:;">
+  
+  
+  
+  
+  <script>
+  "use strict";!function(){var i=0<arguments.length&&void 0!==arguments[0]?arguments[0]:"_Owl_",n=window;n[i]||(n[i]={isRunning:!1,isReady:!1,preTasks:[],dataSet:[],use:function(i,t){this.isReady&&n.Owl&&n.Owl[i](t),this.preTasks.push({api:i,data:[t]})},add:function(i){this.dataSet.push(i)},run:function(){var t=this;if(!this.isRunning){this.isRunning=!0;var i=n.onerror;n.onerror=function(){this.isReady||this.add({type:"jsError",data:arguments}),i&&i.apply(n,arguments)}.bind(this),(n.addEventListener||n.attachEvent)("error",function(i){t.isReady||t.add({type:"resError",data:[i]})},!0)}}},n[i].run())}();
+  </script>
+  <script crossorigin="anonymous" src="//www.dpfile.com/app/owl/static/owl_1.7.20.js"></script>
+  <script>
+  Owl.start({
+    project: 'canary',
+    pageUrl: location.href.split('?')[0].replace(/\/\d+/g, '/:id'),
+    resource: {
+      delay: 2000,
+    },
+    
+  });
+  </script>
+  <script crossorigin="anonymous" src="//s0.meituan.net/bs/?f=myfe/canary:/yao-0.0.10.js"></script>
+  <script>
+   Yao.start({
+     project:'canary',
+     page: {
+       sample: 1
+     },
+     
+   })
+  </script>
+  <script type="text/javascript">
+    window.browser = "chrome";
+    window.platform = "android";
+    window.version = "76.0.3809";
+    window.channelId = 4;
+    window.channelName = "canary";
+    window.hostEnvironment = null;
+  </script>
+  
+<script type="text/javascript">
+  if(location.pathname === '/'){
+    var queryMap = {};
+    var hashStr = location.hash;
+    var queryStr = location.search;
+    var generateQueryMap = function(str){
+      str.replace(/\?|#/g, '').split('&').map(function (queryItem){
+        queryItem = queryItem.split('=');
+        queryMap[queryItem[0]] = queryItem[1];
+      })
+    };
+    var getQueryValue = function(k){
+      return queryMap[k]? queryMap[k]: '';
+    };
+    var leftpad = function(s, num, placeholder){
+      s = String(s);
+      while(s.length<num){
+        s = placeholder+s;
+      }
+      return s;
+    };
+    if(queryStr){
+      generateQueryMap(queryStr);
+    }
+    if(hashStr){
+      generateQueryMap(hashStr);  // hash 优先级较高，如果出现和query中 key相同的会将query中的替换掉
+    }
+    var linkMap = {
+      'showcinemas': '/cinema/movie/'+ getQueryValue('movieid') +'?_v_=yes',
+      'showtime': '/shows/'+ getQueryValue('cinemaid') +'?_v_=yes&movieid='+ getQueryValue('movieid') +'&date='+ getQueryValue('date'),
+      'seats': '/seats/'+ getQueryValue('showDate').replace(/-/g,'') + leftpad(getQueryValue('showId'), 7, '0') +'?_v_=yes',
+      'buy': '/createOrder/'+ getQueryValue('id') +'?_v_=yes',
+      'changecity': '/city?_v_=yes',
+      'comment': '/replies/' + getQueryValue('id') + '?_v_=yes'
+    };
+    if(queryMap.tmp){
+      location.href = linkMap[queryMap.tmp] || '/?_v_=yes'
+    }
+  }
+</script>
+  
+
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+  
+
+
+
+  <link rel="stylesheet" href="//s0.meituan.net/bs/?f=myfe/canary:/static/deploy/dpmmweb/common.b1034650.css" />
+  <link href="//s0.meituan.net/bs/?f=myfe/canary:/static/deploy/dpmmweb/theme.ac1d14a5.css" rel="stylesheet" />
+
+
+  
+<style id="fontface">
+</style>
+  
+  <link rel="stylesheet" href="//s0.meituan.net/bs/?f=myfe/canary:/static/deploy/dpmmweb/index.ee8c7a33.css" />
+  <script>
+    window.type =  "movie";
+    window.brandId = ""
+  </script>
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name='apple-touch-fullscreen' content='yes'>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="icon" href="//s0.meituan.net/bs/?f=myfe/canary:/static/deploy/images/icon/faviconmy.ico" type="image/x-icon">
+  <link rel="apple-touch-icon-precomposed" sizes="57x57"
+        href="//s0.meituan.net/bs/?f=myfe/canary:/static/deploy/images/startup/apple-touch-icon-57x57-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="120x120"
+        href="//s0.meituan.net/bs/?f=myfe/canary:/static/deploy/images/startup/apple-touch-icon-120x120-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="196x196"
+        href="//s0.meituan.net/bs/?f=myfe/canary:/static/deploy/images/startup/apple-touch-icon-196x196-precomposed.png">
+  <link rel="apple-touch-startup-image"
+        href="//s0.meituan.net/bs/?f=myfe/canary:/static/deploy/images/startup/apple-touch-startup-image-640x1096.png"
+        media="(device-height:568px)">
+  <link rel="apple-touch-startup-image"
+        href="//s0.meituan.net/bs/?f=myfe/canary:/static/deploy/images/startup/apple-touch-startup-image-640x920.png"
+        media="(device-height:480px)">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="format-detection" content="address=no">
+  
+  <style type="text/css">
+    a {
+      cursor: pointer;
+    }
+  </style>
+  
+  
+
+<script>
+  window.cid = "";
+  window.uid = "";
+  window.appnm = "maoyan_i";
+  window.cooperateMode = "false";
+  window.openPlatform = false;
+  window.openPlatformSub = false;
+  window.icbcback = false;
+  
+  window.val = {};
+  // 灵犀埋点加入mtsi-flag
+  window.val = Object.assign({}, {
+    'mtsi-flag': "0",
+  }, window.val);
+  window.val.custom = Object.assign({}, {
+    '__browser__': "chrome",
+  }, window.val.custom)
+</script>
+<script src="//s0.meituan.net/bs/?f=myfe/canary:/static/deploy/js/dpmmweb.mta.min.aaa94b56.js" crossorigin="anonymous"></script>
+<script>
+  /*
+   * MTA v1.0.0
+   * (c) 2014-2018
+   * 美团点评 - 性能平台 
+   */
+    !function(){"use strict";!function(t,n,e){function r(){var e=n.createElement("script");e.async=!0,e.src="//s0.meituan.net/bs/js/?f=mta-js:mta.min.js";var t=n.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}"[object String]"===Object.prototype.toString.call(e)&&(e=[e]),t.MeituanAnalyticsObject=e;for(var o=0;o<e.length;o++)!function(e){t[e]=t[e]||function(){(t[e].q=t[e].q||[]).push(arguments)}}(e[o]);if("complete"===n.readyState)r();else{var i="addEventListener",s="attachEvent";if(t[i])t[i]("load",r,!1);else if(t[s])t[s]("onload",r);else{var a=t.onload;t.onload=function(){r(),a&&a()}}}}(window,document,"mta"),function(c,e,t){if(e&&!("_mta"in e)){e._mta=!0;var a=c.location.protocol;if("file:"!==a){var l=c.location.host,h=e.prototype.open;e.prototype.open=function(e,t,n,r,o){if(this._method="string"==typeof e?e.toUpperCase():null,t){if(0===t.indexOf("http://")||0===t.indexOf("https://")||0===t.indexOf("//"))this._url=t;else if(0===t.indexOf("/"))this._url=a+"//"+l+t;else{var i=a+"//"+l+c.location.pathname;i=i.substring(0,i.lastIndexOf("/")+1),this._url=i+t}var s=this._url.indexOf("?");-1!==s?(this._searchLength=this._url.length-1-s,this._url=this._url.substring(0,s)):this._searchLength=0}else this._url=null,this._searchLength=0;return this._startTime=(new Date).getTime(),h.apply(this,arguments)};var r="onreadystatechange",o="addEventListener",i=e.prototype.send;e.prototype.send=function(h){function t(e,t){var n=c.mta.q&&c.mta.q.beacon,r=n&&n.url||"//dreport.meituan.net";if(0!==e._url.indexOf(r)){for(var o,i=[98,114,111,119,115,101,114,46,97,106,97,120],s="browser.ajax",a=0,l=s.length;a<l;a++)if(s.charCodeAt(a)!==i[a])return;if(e.response)switch(e.responseType){case"json":o=JSON&&JSON.stringify(e.response).length;break;case"blob":case"moz-blob":o=e.response.size;break;case"arraybuffer":o=e.response.byteLength;case"document":o=e.response.documentElement&&e.response.documentElement.innerHTML&&e.response.documentElement.innerHTML.length+28;break;default:o=e.response.length}c.mta("send",s,{url:e._url,method:e._method,error:!(0===e.status.toString().indexOf("2")||304===e.status),responseTime:(new Date).getTime()-e._startTime,requestSize:e._searchLength+(h?h.length:0),responseSize:o||0})}}if(o in this){var e=function(e){t(this)};this[o]("load",e),this[o]("error",e),this[o]("abort",e)}else{var n=this[r];this[r]=function(e){n&&n.apply(this,arguments),4===this.readyState&&c.mta&&c.mta&&t(this)}}return i.apply(this,arguments)}}}}(window,window.XMLHttpRequest),function(u,f){if(u.fetch&&"function"==typeof f&&(!("_mta"in f)&&"file:"!==u.location.protocol)){u.fetch=function(e,t){if(!e)throw new Error("Uncaught (in promise) TypeError: Failed to execute 'fetch'on 'Window': 1 argument required, but only 0 present.at");var n=((t=t||{}).method||"get").toLowerCase(),r=e.indexOf("?"),o=0;if("string"!=typeof n)throw new Error("Uncaught (in promise) TypeError: Failed to execute 'fetch'on 'window': "+n.toString()+"is not valid HTTP method.");if(-1===["get","post","delete","head","options","put"].indexOf(n))throw new Error("Failed to load"+e+": Method "+n+" is not allowed by Access-Control-Allow-Methods.");-1!==r&&(o=e.length-1-r),"post"===n&&(o=t.body&&t.body.length||0);var i,s,a,l=(i=e,s=n,a=o,function(e,t){u.mta&&u.mta("send","browser.ajax",{url:i,method:s,error:e,responseTime:(new Date).getTime()-t,requestSize:a})}),h=f,c=(new Date).getTime();return h(e,t).then(function(e){var t=e.clone().status;return l(!(200<=t&&t<300)||"304"===t,c),e}).catch(function(e){return l(!0,c),e})},u.fetch._mta=!0}}(window,window.fetch)}();
+    mta('create', '55dbd10e92d1d4ee71b9c201');
+    // 加入该段代码会根据采样率发送页面性能指标，其中包括
+    // ttfb、ttr、dns 等包含在 window.performance 中的数据
+    // 移除该语句将不会发送该请求
+    mta('send', 'page');
+</script>
+  
+  <script type="text/javascript">
+  var g_timepoint_head = Date.now();
+  </script>
+</head>
+
+<body>
+
+
+
+  <header class="navbar  ">
+    <div class="nav-wrap-left">
+        <a class="back"  href="#" onClick="javascript: window.history.back();return false;"><i class="icon-back"></i></a>
+    </div>
+    <h1 class="nav-header">猫眼电影</h1>
+  </header>
+  <div class="body" style="display: block;">
+
+
+<a id="download-header" href="/app?channel=mymovie1yuan-dy" data-cid="c_dmLad" data-bid="b_53up23as" data-lab='{"position":"home", "utm_content": "", "utm_source": ""}'>
+  <div class="download-header">
+    <div class="logo-img"></div>
+    <div class="info-wrapper">
+      <div class="title">猫眼</div>
+      <div class="content">0 元看电影，天天领现金</div>
+    </div>
+    <div class="link-btn">立即领取</div>
+  </div>
+</a>
+<a id="download-tip" class="download-tip" href=/app?channel=mymovie1yuan-dy data-cid="c_dmLad" data-bid="b_53up23as" data-lab='{"position":"bottom", "utm_content": "", "utm_source": ""}'></a>
+
+<section class="topbar" style=>
+	  <div class="white-bg topbar-bg ">  
+        <div class="city-entry">
+          <span class="city-name">南京</span><i class="city-entry-arrow"></i>
+        </div>
+        <div class="switch-hot" data-active=".n-hot">
+            <div class="hot-item active" data-tab=".n-hot">正在热映</div>
+            <div class="hot-item" data-tab=".f-hot">即将上映</div>
+        </div>
+        <div class="search-entry search-icon" data-type="movie"></div>
+    </div>
+</section>
+<section data-page=".movie" class="movie singleton page active">
+	<div class="page-wrap">
+		<div class="swiper-header movie-ad">
+		</div>
+		<div class="tab-block">
+			<div class="tab-content">
+				<div class="page active n-hot" data-hot=".n-hot" data-cid="c_dmLad">
+					<div class="list-wrap">
+					</div>
+					<div class="more"></div>
+				</div>
+				<div class="page f-hot"  data-hot=".f-hot" data-cid="c_3j5p10oz">
+					<div class="list-wrap">
+						<div class="most-expected">
+							<p class="title">近期最受期待</p>
+							<div class="most-expected-list"></div>
+						</div>
+						<div class="coming-list"></div>
+					</div>
+					<div class="more"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section data-page=".cinema" class="cinema singleton page">
+	<div class="page-wrap">
+    <div class="swiper-header cinema-ad"></div>
+
+
+<div class="close-tab"></div>
+<div class="nav-wrap filter-nav-wrap">
+	<div class="tab mb-line-b">
+		<div class="item" data-tab=".region">全城<i class="drop"></i></div>
+		<div class="item" data-tab=".brand">品牌<i class="drop"></i></div>
+        <div class="item" data-tab=".special">特色<i class="drop"></i></div>
+	</div>
+    <div class="close-tab">
+        <div class="tab-content">
+            <div class="page region" data-bid="dp_wx_home_select_area">
+            </div>
+        </div>
+    </div>
+</div>
+		<div class="cinema-list" data-cid="c_5ovvtlp2"> 
+			<div class="list-wrap">
+			</div>
+			<div class="more"></div>
+		</div>
+	</div>
+</section>
+
+
+<section data-page=".shows" class="shows singleton page">
+	<div class="page-wrap">
+		<div class="shows-index"> 
+			<div class="list-wrap">
+			</div>
+		</div>
+	</div>
+</section>
+
+
+<section id="city-list" class="city-list-container"></section>
+<!-- TODO 演出开发完毕后 simple-bottom-nav-bar改为four-bottom-nav-bar-->
+<div class="bottom-nav-bar">
+    <div class="nav-icon-wrapper current" data-tab=".movie">
+        <span class="nav-icons" id="icon-movie"></span>
+        <span class="nav-text">电影</span>
+    </div>
+    <div class="nav-icon-wrapper" data-tab=".cinema">
+        <span class="nav-icons" id="icon-cinema"></span>
+        <span class="nav-text">影院</span>
+    </div>
+    <div class="nav-icon-wrapper" data-tab=".my">
+        <span class="nav-icons" id="icon-mine"></span>
+        <span class="nav-text">我的</span>
+    </div>
+</div>
+
+  <div class="wish-toast" style="display: none">
+    <img class="toast-bg" src="//s0.meituan.net/bs/?f=myfe/canary:/static/deploy/images/toast-bg.png">
+    <span class="tips"></span>
+  </div>
+  </div>
+<script src="//s0.meituan.net/bs/?f=myfe/canary:/zepto.bundle.min.js,toast.bundle.min.js,cookie.bundle.min.js,confirm.bundle.min.js" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+<script>
+    $(window).on('click', '[data-bid]', function(){
+        var bid = $(this).data('bid');
+        var lab = $(this).data('lab');
+        if((typeof lab) !== 'object'){
+          lab = eval('(' + lab + ')');
+        }
+        var data = {
+          nm : 'mge',
+          val_bid: bid,
+          val_cid: window.cid,
+          event_type: 'click'
+        }
+        if(lab){
+          data.val_lab = lab;
+        }
+        Analytics('event', data);
+    });
+</script>
+
+<script>
+    window.allowRefund = true;
+    window.endorse = true;
+    window.snack = true;
+    window.vipTag = true;
+</script>
+
+<script src="//s0.meituan.net/bs/?f=myfe/canary:/static/deploy/dpmmweb/common.6826d1f1.js" crossorigin="anonymous"></script>
+<script src="//s0.meituan.net/bs/?f=myfe/canary:/static/deploy/dpmmweb/index.f061593a.js" crossorigin="anonymous"></script>
+
+</body>
+</html>
