@@ -3,8 +3,8 @@
 import mysql
 from mysql.connector import errorcode
 
-from budejie.com_zxl_spider_data.JokeBean import JokeBean
-from budejie.com_zxl_spider_db.BaseDB import BaseDB
+from ..com_zxl_spider_data.JokeBean import JokeBean
+from ..com_zxl_spider_db.BaseDB import BaseDB
 
 
 class HotPicJokeDB(BaseDB):

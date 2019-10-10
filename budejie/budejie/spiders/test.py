@@ -3,8 +3,8 @@ import hashlib
 
 import scrapy
 
-from budejie.com_zxl_spider_data.JokeBean import JokeBean
-from budejie.com_zxl_spider_db.HotPicJokeDB import HotPicJokeDB
+from ..com_zxl_spider_data.JokeBean import JokeBean
+from ..com_zxl_spider_db.HotPicJokeDB import HotPicJokeDB
 
 
 class TestSpider(scrapy.Spider):
@@ -21,11 +21,11 @@ class TestSpider(scrapy.Spider):
         print("parse")
         print("response.url::", response.url)
 
-        # page = response.url.split("/")[-2]
-        # filename = 'budejie-%s.html' % page
-        # with open(filename, 'wb') as f:
-        #     f.write(response.body)
-        # self.log('保存文件: %s' % filename)
+        page = response.url.split("/")[-2]
+        filename = 'budejie-%s.html' % page
+        with open(filename, 'wb') as f:
+            f.write(response.body)
+        self.log('保存文件: %s' % filename)
 
         j_r_list_path = '//div[@class="j-r-list"]'
         j_r_list_obj = response.xpath(j_r_list_path)
@@ -113,4 +113,4 @@ class TestSpider(scrapy.Spider):
             next_page_url = 'http://www.budejie.com/' + next_page
             print("next_page_url::", next_page_url)
             next_page_url = response.urljoin(next_page_url)
-            yield scrapy.Request(next_page_url, callback=self.parse)
+            # yield scrapy.Request(next_page_url, callback=self.parse)
