@@ -4,17 +4,21 @@ import re
 
 from selenium.common.exceptions import NoSuchElementException
 
-from com_zxl_spider_db.StarDB import StarDB
-from com_zxl_spider_data.StarInfoBean import StarInfoBean
+from com_zxl_spider_data.MaoYanBean import MaoYanBean
+from com_zxl_spider_db.MaoYanDB import MaoYanDB
 from com_zxl_spider_request.BaseRequest import BaseRequest
 
 
 class RequestStarPic(BaseRequest):
 
-    def __init__(self):
-        pass
+    mao_yan_db = None
 
-    def request(self, url):
+    def __init__(self):
+        self.mao_yan_db = MaoYanDB()
+        self.mao_yan_db.delete_bean()
+
+    def request(self, type, url):
+        print("request::type = %d " % type)
         print("request::url = %s " % url)
         driver = self.get_web_content(url)
         # print(driver.page_source)
@@ -52,10 +56,24 @@ class RequestStarPic(BaseRequest):
             movie_title = movie_item_detail_obj.text
             movie_detail_url = movie_item_detail_obj.get_attribute('href')
 
+            movie_id_result = re.findall(".*?(\\d+).*?", movie_id)
+            if len(movie_id_result) > 0:
+                movie_id = movie_id_result[0]
+
             print("movie_id = %s" % movie_id)
             print("movie_title = %s" % movie_title)
             print("movie_poster_url = %s" % movie_poster_url)
             print("movie_detail_url = %s" % movie_detail_url)
+
+            mao_yan_bean = MaoYanBean()
+            mao_yan_bean = mao_yan_bean.create_bean('', movie_id, movie_title, movie_poster_url, movie_detail_url, type)
+
+            mao_yan_temp_bean = self.mao_yan_db.query_by_movie_id(movie_id)
+            if mao_yan_temp_bean is None:
+                self.mao_yan_db.insert_bean(mao_yan_bean)
+            else:
+                print("----------exist break-----------\n")
+                break
 
             print("----------end-----------\n")
 
@@ -67,15 +85,23 @@ class RequestStarPic(BaseRequest):
             for page_item in page_items:
                 page_item_text = page_item.text
                 if page_item_text == '下一页':
-                    self.request(page_item.get_attribute("href"))
+                    self.request(type, page_item.get_attribute("href"))
         except NoSuchElementException as e:
             print(e)
 
         driver.close()
 
+    def close_db(self):
+        self.mao_yan_db.close_db()
+
 
 if __name__ == "__main__":
     request = RequestStarPic()
-    # request.request("https://maoyan.com/films?showType=1")
-    # request.request("https://maoyan.com/films?showType=2")
-    request.request("https://maoyan.com/films?showType=3")
+    # 正在热映
+    request.request(1, "https://maoyan.com/films?showType=1")
+    # 即将
+    # request.request(2, "https://maoyan.com/films?showType=2")
+    # 历史
+    # request.request(3, "https://maoyan.com/films?showType=3")
+
+    request.close_db()

@@ -10,8 +10,8 @@ class BaseDB:
     # host = '103.46.128.49'
     host = 'zxltest.zicp.vip'
     port = '42278'
-    urser_name = "zxlworking"
-    pass_word = "z1x2l3!@#$"
+    urser_name = ""
+    pass_word = ""
     db_name = 'joke'
 
     CREATE_TABLE_SQL = ("")
@@ -70,6 +70,7 @@ class BaseDB:
 
     def insert(self, sql_str, param):
         print("insert::", sql_str)
+        print(param)
         cursor.execute(sql_str, param)
         cnx.commit()
 
