@@ -62,7 +62,7 @@ class MaoYanDB(BaseDB):
     def insert_bean(self, mao_yan_bean):
         self.insert(self.INSERT_SQL, self.create_insert_data(mao_yan_bean))
 
-    def delete_bean(self):
+    def delete_all(self):
         self.delete(self.DELETE_SQL)
 
     def query_by_movie_id(self, movie_id):

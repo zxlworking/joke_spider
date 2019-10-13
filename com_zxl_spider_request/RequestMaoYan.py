@@ -9,13 +9,13 @@ from com_zxl_spider_db.MaoYanDB import MaoYanDB
 from com_zxl_spider_request.BaseRequest import BaseRequest
 
 
-class RequestStarPic(BaseRequest):
+class RequestNowMaoYan(BaseRequest):
 
     mao_yan_db = None
 
     def __init__(self):
         self.mao_yan_db = MaoYanDB()
-        self.mao_yan_db.delete_bean()
+        self.mao_yan_db.delete_all()
 
     def request(self, type, url):
         print("request::type = %d " % type)
@@ -94,9 +94,13 @@ class RequestStarPic(BaseRequest):
     def close_db(self):
         self.mao_yan_db.close_db()
 
+    def start(self):
+        self.request(1, "https://maoyan.com/films?showType=1")
+        self.close_db()
+
 
 if __name__ == "__main__":
-    request = RequestStarPic()
+    request = RequestNowMaoYan()
     # 正在热映
     request.request(1, "https://maoyan.com/films?showType=1")
     # 即将
