@@ -11,11 +11,17 @@ from com_zxl_spider_request.BaseRequest import BaseRequest
 
 class RequestNowMaoYan(BaseRequest):
 
-    mao_yan_db = None
+    mao_yan_now_db = None
+    mao_yan_future_db = None
+    mao_yan_history_db = None
 
     def __init__(self):
-        self.mao_yan_db = MaoYanDB()
-        self.mao_yan_db.delete_all()
+        self.mao_yan_now_db = MaoYanDB(MaoYanDB.NOW_TABLE_NAME)
+        self.mao_yan_future_db = MaoYanDB(MaoYanDB.FUTURE_TABLE_NAME)
+        self.mao_yan_history_db = MaoYanDB(MaoYanDB.HISTORY_TABLE_NAME)
+
+        self.mao_yan_now_db.delete_all()
+        self.mao_yan_future_db.delete_all()
 
     def request(self, type, url):
         print("request::type = %d " % type)
@@ -68,9 +74,17 @@ class RequestNowMaoYan(BaseRequest):
             mao_yan_bean = MaoYanBean()
             mao_yan_bean = mao_yan_bean.create_bean('', movie_id, movie_title, movie_poster_url, movie_detail_url, type)
 
-            mao_yan_temp_bean = self.mao_yan_db.query_by_movie_id(movie_id)
+            mao_yan_db = self.mao_yan_now_db
+            if type == 1:
+                mao_yan_db = self.mao_yan_now_db
+            elif type == 2:
+                mao_yan_db = self.mao_yan_future_db
+            elif type == 3:
+                mao_yan_db = self.mao_yan_history_db
+
+            mao_yan_temp_bean = mao_yan_db.query_by_movie_id(movie_id)
             if mao_yan_temp_bean is None:
-                self.mao_yan_db.insert_bean(mao_yan_bean)
+                mao_yan_db.insert_bean(mao_yan_bean)
             else:
                 print("----------exist break-----------\n")
                 break
@@ -92,20 +106,26 @@ class RequestNowMaoYan(BaseRequest):
         driver.close()
 
     def close_db(self):
-        self.mao_yan_db.close_db()
+        self.mao_yan_now_db.close_db()
+        self.mao_yan_future_db.close_db()
+        self.mao_yan_history_db.close_db()
 
     def start(self):
         self.request(1, "https://maoyan.com/films?showType=1")
+        self.request(2, "https://maoyan.com/films?showType=2")
+        self.request(3, "https://maoyan.com/films?showType=3")
         self.close_db()
 
 
 if __name__ == "__main__":
     request = RequestNowMaoYan()
     # 正在热映
-    request.request(1, "https://maoyan.com/films?showType=1")
+    # request.request(1, "https://maoyan.com/films?showType=1")
     # 即将
     # request.request(2, "https://maoyan.com/films?showType=2")
     # 历史
     # request.request(3, "https://maoyan.com/films?showType=3")
+    # request.close_db()
 
-    request.close_db()
+    request.start()
+

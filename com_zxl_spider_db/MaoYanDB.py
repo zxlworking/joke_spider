@@ -9,7 +9,11 @@ from com_zxl_spider_db.BaseDB import BaseDB
 
 class MaoYanDB(BaseDB):
 
-    TABLE_NAME = 'mao_yan_now'
+    NOW_TABLE_NAME = 'mao_yan_now'
+    FUTURE_TABLE_NAME = 'mao_yan_future'
+    HISTORY_TABLE_NAME = 'mao_yan_history'
+
+    TABLE_NAME = ''
 
     COLUME_ID = 'id'
     COLUME_MOVIE_ID = 'movie_id'
@@ -18,37 +22,51 @@ class MaoYanDB(BaseDB):
     COLUME_MOVIE_DETAIL_URL = 'movie_detail_url'
     COLUME_MOVIE_TYPE = 'movie_type'
 
-    CREATE_TABLE_SQL = (
-        "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " ("
-        "  " + COLUME_ID + " bigint(20) NOT NULL AUTO_INCREMENT,"
-        "  " + COLUME_MOVIE_ID + "  text,"
-        "  " + COLUME_MOVIE_TITLE + " text,"
-        "  " + COLUME_MOVIE_POSTER_URL + " text,"
-        "  " + COLUME_MOVIE_DETAIL_URL + " text,"
-        "  " + COLUME_MOVIE_TYPE + " text,"
-        "  PRIMARY KEY (" + COLUME_ID + ")"
-        ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci")
+    CREATE_TABLE_SQL = ''
 
-    INSERT_SQL = ("INSERT INTO " + TABLE_NAME + " ("
-                                                     + COLUME_MOVIE_ID + ","
-                                                     + COLUME_MOVIE_TITLE + ","
-                                                     + COLUME_MOVIE_POSTER_URL + ","
-                                                     + COLUME_MOVIE_DETAIL_URL + ","
-                                                     + COLUME_MOVIE_TYPE
-                                                     + ") "
-                                                     + "VALUES (%s, %s, %s, %s, %s)")
+    INSERT_SQL = ''
 
-    DELETE_SQL = ("DELETE FROM " + TABLE_NAME)
+    DELETE_SQL = ''
 
-    QUERY_BY_MOVIE_ID = ("SELECT "
-                         + COLUME_ID + ","
-                         + COLUME_MOVIE_ID + ","
-                         + COLUME_MOVIE_TITLE + ","
-                         + COLUME_MOVIE_POSTER_URL + ","
-                         + COLUME_MOVIE_DETAIL_URL + ","
-                         + COLUME_MOVIE_TYPE
-                         + " FROM " + TABLE_NAME
-                         + " WHERE " + COLUME_MOVIE_ID + " = '%s'")
+    QUERY_BY_MOVIE_ID = ''
+
+    def __init__(self, table_name):
+        self.TABLE_NAME = table_name
+        print("MaoYanDB::__init__::TABLE_NAME = " + table_name)
+
+        self.CREATE_TABLE_SQL = (
+                "CREATE TABLE IF NOT EXISTS " + self.TABLE_NAME + " ("
+                                              + self.COLUME_ID + " bigint(20) NOT NULL AUTO_INCREMENT,"
+                                              + self.COLUME_MOVIE_ID + "  text,"
+                                              + self.COLUME_MOVIE_TITLE + " text,"
+                                              + self.COLUME_MOVIE_POSTER_URL + " text,"
+                                              + self.COLUME_MOVIE_DETAIL_URL + " text,"
+                                              + self.COLUME_MOVIE_TYPE + " text,"
+                                              + "  PRIMARY KEY (" + self.COLUME_ID + ")"
+                                              + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci")
+
+        self.INSERT_SQL = ("INSERT INTO " + self.TABLE_NAME + " ("
+                      + self.COLUME_MOVIE_ID + ","
+                      + self.COLUME_MOVIE_TITLE + ","
+                      + self.COLUME_MOVIE_POSTER_URL + ","
+                      + self.COLUME_MOVIE_DETAIL_URL + ","
+                      + self.COLUME_MOVIE_TYPE
+                      + ") "
+                      + "VALUES (%s, %s, %s, %s, %s)")
+
+        self.DELETE_SQL = ("DELETE FROM " + self.TABLE_NAME)
+
+        self.QUERY_BY_MOVIE_ID = ("SELECT "
+                             + self.COLUME_ID + ","
+                             + self.COLUME_MOVIE_ID + ","
+                             + self.COLUME_MOVIE_TITLE + ","
+                             + self.COLUME_MOVIE_POSTER_URL + ","
+                             + self.COLUME_MOVIE_DETAIL_URL + ","
+                             + self.COLUME_MOVIE_TYPE
+                             + " FROM " + self.TABLE_NAME
+                             + " WHERE " + self.COLUME_MOVIE_ID + " = '%s'")
+
+        super(MaoYanDB, self).__init__()
 
     def create_insert_data(self, mao_yan_bean):
         return (
