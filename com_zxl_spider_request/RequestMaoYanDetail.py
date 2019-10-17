@@ -30,115 +30,100 @@ class RequestNowMaoYan(BaseRequest):
         print("request::movie_detail_url = %s " % movie_detail_url)
         # driver = self.get_web_content(movie_detail_url)
         driver = self.login_mao_yan()
-        driver.get("view-source:" + movie_detail_url)
+        driver.get(movie_detail_url)
         page_content = driver.page_source
-        print(page_content)
+        # print(page_content)
 
-        print("===============BeautifulSoup\n\n\n\n\n\n\n")
+        # font_url = re.findall(r'(vfile\.meituan\.net\/colorstone\/\w+\.woff)', page_content)[0]
+        # print("font_url = ", font_url)
+        # star_content1 = re.findall(""".*?<span class="index-left info-num ">.*?<span class="stonefont">(.*?)</span>.*?</span>""", page_content, re.S)
+        # print("star_content1 = ", star_content1)
+        # star_content = re.findall(""".*?<span class="stonefont">.*?""", page_content)
+        # print("star_content = ", star_content)
 
-        soup = BeautifulSoup(page_content, 'lxml')
-        print(soup.find_all('&#x'))
+        print("=====start======")
+        find_result = re.findall(r'.*?url\(\'(.*?)\'\).*?', page_content)
+        if len(find_result) > 0:
+            for woff_url in find_result:
+                if 'woff' in woff_url:
+                    woff_url = "http:" + woff_url
+                    print("woff_url--->", woff_url)
+                    font_request = request.Request(woff_url)
+                    font_res = request.urlopen(font_request)
+                    font_respoen = font_res.read()
+                    font_file = open('mao_yan_font.woff', 'wb')
+                    font_file.write(font_respoen)
+                    font_file.close()
+                    woff_font = TTFont("mao_yan_font.woff")
+                    woff_font.saveXML("mao_yan_font.xml")
+        print("=====end======")
 
-        # print("=====start======")
-        # woff_font = None
-        # find_result = re.findall(r'.*?url\(\'(.*?)\'\).*?', page_content)
-        # if len(find_result) > 0:
-        #     for woff_url in find_result:
-        #         if 'woff' in woff_url:
-        #             woff_url = "http:" + woff_url
-        #             print("woff_url--->", woff_url)
-        #             font_request = request.Request(woff_url)
-        #             font_res = request.urlopen(font_request)
-        #             font_respoen = font_res.read()
-        #             font_file = open('mao_yan_font.woff', 'wb')
-        #             font_file.write(font_respoen)
-        #             font_file.close()
-        #             woff_font = TTFont("mao_yan_font.woff")
-        #             woff_font.saveXML("mao_yan_font.xml")
-        #             print('respoen::', font_respoen)
-        # print("=====end======")
-        #
-        # try:
-        #     movie_detail_path = "//div[@class='banner']"
-        #     movie_detail_object = driver.find_element_by_xpath(movie_detail_path)
-        #
-        #     movie_avatar_path = ".//img[@class='avatar']"
-        #     movie_avatar_object = movie_detail_object.find_element_by_xpath(movie_avatar_path)
-        #     movie_avatar_url = movie_avatar_object.get_attribute("src")
-        #
-        #     movie_introduce_path = ".//div[@class='celeInfo-right clearfix']"
-        #     movie_introduce_object = movie_detail_object.find_element_by_xpath(movie_introduce_path)
-        #
-        #     movie_brief_path = ".//div[@class='movie-brief-container']"
-        #     movie_brief_object = movie_introduce_object.find_element_by_xpath(movie_brief_path)
-        #
-        #     movie_name_path = ".//h3[@class='name']"
-        #     movie_name_object = movie_brief_object.find_element_by_xpath(movie_name_path)
-        #     movie_name = movie_name_object.text
-        #
-        #     movie_en_name_path = ".//div[@class='ename ellipsis']"
-        #     movie_en_name_object = movie_brief_object.find_element_by_xpath(movie_en_name_path)
-        #     movie_en_name = movie_en_name_object.text
-        #
-        #     movie_brief_info_list_path = ".//li"
-        #     movie_brief_info_list_object = movie_brief_object.find_elements_by_xpath(movie_brief_info_list_path)
-        #
-        #     movie_category = ''
-        #     movie_country = ''
-        #     movie_duration = ''
-        #     movie_release_info = ''
-        #
-        #     if len(movie_brief_info_list_object) > 0:
-        #         movie_category = movie_brief_info_list_object[0].text
-        #     if len(movie_brief_info_list_object) > 1:
-        #         temp_str = movie_brief_info_list_object[1].text
-        #         movie_country = temp_str
-        #         if "/" in temp_str:
-        #             temp_str = temp_str.replace(" ", "")
-        #             temp_str = temp_str.split("/")
-        #             if len(temp_str) > 1:
-        #                 movie_country = temp_str[0]
-        #                 movie_duration = temp_str[1]
-        #     if len(movie_brief_info_list_object) > 2:
-        #         movie_release_info = movie_brief_info_list_object[2].text
-        #
-        #     movie_stats_path = ".//div[@class='movie-stats-container']"
-        #     movie_stats_object = movie_introduce_object.find_element_by_xpath(movie_stats_path)
-        #
-        #     movie_score_path = ".//span[@class='index-left info-num ']"
-        #     movie_score_object = movie_stats_object.find_element_by_xpath(movie_score_path)
-        #     movie_score_content_path = ".//span"
-        #     movie_score_content_object = movie_score_object.find_element_by_xpath(movie_score_content_path)
-        #
-        #     print(movie_score_content_object.get_attribute('innerHTML'))
-        #     file = open('test_num.txt', 'wb')
-        #     regex_font = re.compile('(?<=&#x).{4}(?=;)')
-        #     ms = regex_font.findall(movie_score_content_object.text)
-        #     for m in ms:
-        #         file.write(m)
-        #     file.close()
-        #
-        #     movie_score_find_result = re.findall(".*?&#x(.*?);.&#x(.*?);", movie_score_content_object.text)
-        #     print("movie_score_find_result = ", movie_score_find_result)
-        #     if len(movie_score_find_result) > 0:
-        #         for movie_score_find_item in movie_score_find_result:
-        #             print("movie_score_find_result = ", movie_score_find_item)
-        #             self.get_mao_yan_num(movie_score_find_item, woff_font)
-        #
-        #     print("movie_avatar_url = %s" % movie_avatar_url)
-        #     print("movie_name = %s" % movie_name)
-        #     print("movie_en_name = %s" % movie_en_name)
-        #     print("movie_category = %s" % movie_category)
-        #     print("movie_country = %s" % movie_country)
-        #     print("movie_duration = %s" % movie_duration)
-        #     print("movie_release_info = %s" % movie_release_info)
-        #     print("movie_score_content = ", '')
-        #
-        # except NoSuchElementException as noSuchElementException:
-        #     print(noSuchElementException)
+        try:
+            movie_detail_path = "//div[@class='banner']"
+            movie_detail_object = driver.find_element_by_xpath(movie_detail_path)
+
+            movie_avatar_path = ".//img[@class='avatar']"
+            movie_avatar_object = movie_detail_object.find_element_by_xpath(movie_avatar_path)
+            movie_avatar_url = movie_avatar_object.get_attribute("src")
+
+            movie_introduce_path = ".//div[@class='celeInfo-right clearfix']"
+            movie_introduce_object = movie_detail_object.find_element_by_xpath(movie_introduce_path)
+
+            movie_brief_path = ".//div[@class='movie-brief-container']"
+            movie_brief_object = movie_introduce_object.find_element_by_xpath(movie_brief_path)
+
+            movie_name_path = ".//h3[@class='name']"
+            movie_name_object = movie_brief_object.find_element_by_xpath(movie_name_path)
+            movie_name = movie_name_object.text
+
+            movie_en_name_path = ".//div[@class='ename ellipsis']"
+            movie_en_name_object = movie_brief_object.find_element_by_xpath(movie_en_name_path)
+            movie_en_name = movie_en_name_object.text
+
+            movie_brief_info_list_path = ".//li"
+            movie_brief_info_list_object = movie_brief_object.find_elements_by_xpath(movie_brief_info_list_path)
+
+            movie_category = ''
+            movie_country = ''
+            movie_duration = ''
+            movie_release_info = ''
+
+            if len(movie_brief_info_list_object) > 0:
+                movie_category = movie_brief_info_list_object[0].text
+            if len(movie_brief_info_list_object) > 1:
+                temp_str = movie_brief_info_list_object[1].text
+                movie_country = temp_str
+                if "/" in temp_str:
+                    temp_str = temp_str.replace(" ", "")
+                    temp_str = temp_str.split("/")
+                    if len(temp_str) > 1:
+                        movie_country = temp_str[0]
+                        movie_duration = temp_str[1]
+            if len(movie_brief_info_list_object) > 2:
+                movie_release_info = movie_brief_info_list_object[2].text
+
+            movie_stats_path = ".//div[@class='movie-stats-container']"
+            movie_stats_object = movie_introduce_object.find_element_by_xpath(movie_stats_path)
+
+            movie_score_content = ''
+            movie_score_result = re.findall(""".*?<span class="index-left info-num ">.*?<span class="stonefont">(.*?)</span>.*?</span>""", page_content, re.S)
+            if len(movie_score_result) > 0:
+                movie_score_content = movie_score_result[0]
+
+            print("movie_avatar_url = %s" % movie_avatar_url)
+            print("movie_name = %s" % movie_name)
+            print("movie_en_name = %s" % movie_en_name)
+            print("movie_category = %s" % movie_category)
+            print("movie_country = %s" % movie_country)
+            print("movie_duration = %s" % movie_duration)
+            print("movie_release_info = %s" % movie_release_info)
+            print("movie_score_content = ", movie_score_content)
+            print("movie_score_content = ", str(movie_score_content, 'unicode'))
+
+        except NoSuchElementException as noSuchElementException:
+            print(noSuchElementException)
 
         driver.close()
-
 
     def get_mao_yan_num(self, num_str, woff_font):
         print("get_mao_yan_num::num_str = ", num_str)
