@@ -42,6 +42,7 @@ class RequestNowMaoYan(BaseRequest):
         # print("star_content = ", star_content)
 
         print("=====start======")
+        woff_font = None
         find_result = re.findall(r'.*?url\(\'(.*?)\'\).*?', page_content)
         if len(find_result) > 0:
             for woff_url in find_result:
@@ -106,7 +107,8 @@ class RequestNowMaoYan(BaseRequest):
             movie_stats_object = movie_introduce_object.find_element_by_xpath(movie_stats_path)
 
             movie_score_content = ''
-            movie_score_result = re.findall(""".*?<span class="index-left info-num ">.*?<span class="stonefont">(.*?)</span>.*?</span>""", page_content, re.S)
+            movie_score_result = re.findall(""".*?<span class="index-left info-num ">.*?<span class="stonefont">(.*?)\.(.*?)</span>.*?</span>""", page_content, re.S)
+            print("movie_score_result = ", movie_score_result)
             if len(movie_score_result) > 0:
                 movie_score_content = movie_score_result[0]
 
@@ -118,7 +120,9 @@ class RequestNowMaoYan(BaseRequest):
             print("movie_duration = %s" % movie_duration)
             print("movie_release_info = %s" % movie_release_info)
             print("movie_score_content = ", movie_score_content)
-            print("movie_score_content = ", str(movie_score_content, 'unicode'))
+            print("movie_score_content = ", movie_score_content[0].encode('unicode_escape').decode())
+
+            self.get_mao_yan_num(movie_score_content[0].encode('unicode_escape').upper(), woff_font)
 
         except NoSuchElementException as noSuchElementException:
             print(noSuchElementException)
