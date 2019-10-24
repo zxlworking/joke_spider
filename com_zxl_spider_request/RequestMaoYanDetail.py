@@ -137,6 +137,45 @@ class RequestNowMaoYan(BaseRequest):
             movie_box_unit_content = movie_box_unit_object.text
 
 
+            # ================tab==================
+            tab_content_path = "//div[@class='tab-content-container']"
+            tab_content_object = driver.find_element_by_xpath(tab_content_path)
+
+            # ================简介 评论============
+            introduce_content = ''
+            comment_list_object = None
+
+            tab_content_detail_path = ".//div[@class='tab-desc tab-content active']"
+            tab_content_detail_object = tab_content_object.find_element_by_xpath(tab_content_detail_path)
+
+            tab_content_detail_list_path = ".//div[@class='module']"
+            tab_content_detail_list_object = tab_content_detail_object.find_elements_by_xpath(tab_content_detail_list_path)
+            print("tab_content_detail_list_object = ",  len(tab_content_detail_list_object), tab_content_detail_list_object)
+            if len(tab_content_detail_list_object) >= 4:
+                introduce_object = tab_content_detail_list_object[0].find_element_by_xpath(".//span[@class='dra']")
+                introduce_content = introduce_object.text
+
+                comment_list_object = tab_content_detail_list_object[3].find_element_by_xpath(".//div[@class='comment-list-container']").find_elements_by_xpath(".//li")
+
+
+            # ================演职人员==============
+            tab_celebrity_path = ".//div[@class='tab-celebrity tab-content']"
+            tab_celebrity_object = tab_content_object.find_element_by_xpath(tab_celebrity_path)
+            tab_celebrity_list_object = tab_celebrity_object.find_elements_by_xpath(".//div[@class='celebrity-group']")
+            print("tab_celebrity_list_object = ",  len(tab_celebrity_list_object), tab_celebrity_list_object)
+
+            # ================奖项=================
+            tab_award_path = ".//div[@class='tab-award tab-content']"
+            tab_award_object = tab_content_object.find_element_by_xpath(tab_award_path)
+            tab_award_list_object = tab_award_object.find_elements_by_xpath(".//li[@class='award-item']")
+            print("tab_award_list_object = ",  len(tab_award_list_object), tab_award_list_object)
+
+            # ================图集=================
+            tab_img_path = ".//div[@class='tab-img tab-content']"
+            tab_img_object = tab_content_object.find_element_by_xpath(tab_img_path)
+            tab_img_list_object = tab_img_object.find_elements_by_xpath(".//li")
+            print("tab_img_list_object = ",  len(tab_img_list_object), tab_img_list_object)
+
             print("movie_avatar_url = ", movie_avatar_url)
             print("movie_name = ", movie_name)
             print("movie_en_name ", movie_en_name)
@@ -151,6 +190,9 @@ class RequestNowMaoYan(BaseRequest):
             print("movie_stats_people_count_unit_content = ", movie_stats_people_count_unit_content)
             print("movie_box_value_content = ", movie_box_value_content)
             print("movie_box_unit_content = ", movie_box_unit_content)
+
+            print("introduce_content = ", introduce_content)
+            print("comment_list_object = ", comment_list_object)
 
         except NoSuchElementException as noSuchElementException:
             print(noSuchElementException)
@@ -272,6 +314,7 @@ class RequestNowMaoYan(BaseRequest):
 
 if __name__ == "__main__":
     requestNowMaoYan = RequestNowMaoYan()
+    # 267
     # requestNowMaoYan.request("1211270", "https://maoyan.com/films/1230121")
     requestNowMaoYan.request("1211270", "https://maoyan.com/films/1211270")
     # requestNowMaoYan.request("1211270", "https://passport.meituan.com/account/unitivelogin?service=maoyan&continue=https%3A%2F%2Fmaoyan.com%2Fpassport%2Flogin%3Fredirect%3D%252F")
