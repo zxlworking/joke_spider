@@ -55,6 +55,9 @@ class RequestNowMaoYan(BaseRequest):
             if movie_poster_url == '':
                 movie_poster_url = movie_poster_default_url
 
+            if '@' in movie_poster_url:
+                movie_poster_url = movie_poster_url.split('@')[0]
+
             movie_item_detail_path = ".//div[@class='channel-detail movie-item-title']"
             movie_item_detail_obj = movie_item.find_element_by_xpath(movie_item_detail_path)
             movie_item_detail_obj = movie_item_detail_obj.find_element_by_xpath(".//a")

@@ -10,14 +10,12 @@ from urllib import request
 import requests
 from fontTools.ttLib import TTFont
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.keys import Keys
 
 from com_zxl_spider_request.BaseRequest import BaseRequest
 
 
 class RequestNowMaoYan(BaseRequest):
-
-    fontdict = {'uniE997': '0', 'uniEE22': '8', 'uniE526': '9', 'uniF652': '2', 'uniE811': '6',
-                'uniE635': '3', 'uniF85A': '1', 'uniE6D4': '4', 'uniE9C8': '5', 'uniEA6D': '7'}
 
     def __init__(self):
         pass
@@ -27,16 +25,13 @@ class RequestNowMaoYan(BaseRequest):
         print("request::movie_detail_url = %s " % movie_detail_url)
         # driver = self.get_web_content(movie_detail_url)
         driver = self.login_mao_yan()
+
+        driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')  # 触发ctrl + t
+        time.sleep(5)
+
         driver.get(movie_detail_url)
         page_content = driver.page_source
-        print(page_content)
-
-        # font_url = re.findall(r'(vfile\.meituan\.net\/colorstone\/\w+\.woff)', page_content)[0]
-        # print("font_url = ", font_url)
-        # star_content1 = re.findall(""".*?<span class="index-left info-num ">.*?<span class="stonefont">(.*?)</span>.*?</span>""", page_content, re.S)
-        # print("star_content1 = ", star_content1)
-        # star_content = re.findall(""".*?<span class="stonefont">.*?""", page_content)
-        # print("star_content = ", star_content)
+        # print(page_content)
 
         print("=====start======")
         woff_url = ''
@@ -63,6 +58,8 @@ class RequestNowMaoYan(BaseRequest):
             movie_avatar_path = ".//img[@class='avatar']"
             movie_avatar_object = movie_detail_object.find_element_by_xpath(movie_avatar_path)
             movie_avatar_url = movie_avatar_object.get_attribute("src")
+            if '@' in movie_avatar_url:
+                movie_avatar_url = movie_avatar_url.split('@')[0]
 
             movie_introduce_path = ".//div[@class='celeInfo-right clearfix']"
             movie_introduce_object = movie_detail_object.find_element_by_xpath(movie_introduce_path)
@@ -97,8 +94,15 @@ class RequestNowMaoYan(BaseRequest):
                     if len(temp_str) > 1:
                         movie_country = temp_str[0]
                         movie_duration = temp_str[1]
+            movie_release_time = ''
+            movie_release_area = ''
             if len(movie_brief_info_list_object) > 2:
                 movie_release_info = movie_brief_info_list_object[2].text
+                movie_release_info_find_result = re.findall('(\\d+.*?\\d+.*?\\d+.*?\\d+.*?\\d+)(.+)', movie_release_info, re.S)
+                print("movie_release_info_find_result = ", movie_release_info_find_result)
+                if len(movie_release_info_find_result) > 0 and len(movie_release_info_find_result[0]) > 1:
+                    movie_release_time = movie_release_info_find_result[0][0]
+                    movie_release_area = movie_release_info_find_result[0][1]
 
             movie_stats_path = ".//div[@class='movie-stats-container']"
             movie_stats_object = movie_introduce_object.find_element_by_xpath(movie_stats_path)
@@ -107,33 +111,53 @@ class RequestNowMaoYan(BaseRequest):
             movie_score_object = movie_stats_object.find_element_by_xpath(movie_score_path)
             movie_score_content_path = ".//span"
             movie_score_content_object = movie_score_object.find_element_by_xpath(movie_score_content_path)
-            temp_movie_score_content = movie_score_content_object.text
+            movie_score_content = self.get_mao_yan_num(woff_url, movie_score_content_object.text, "score.png")
+            # movie_score_content = self.get_mao_yan_num_by_object(movie_score_content_object, "score.png")
 
-            # movie_score_content = ''
-            # movie_score_result = re.findall(""".*?<span class="index-left info-num ">.*?<span class="stonefont">(.*?)\.(.*?)</span>.*?</span>""", page_content, re.S)
-            # print("movie_score_result = ", movie_score_result)
-            # if len(movie_score_result) > 0:
-            #     movie_score_content = movie_score_result[0]
+            movie_stats_people_count_parent_path = ".//span[@class='score-num']"
+            movie_stats_people_count_parent_object = movie_stats_object.find_element_by_xpath(movie_stats_people_count_parent_path)
+            movie_stats_people_count_path = ".//span"
+            movie_stats_people_count_object = movie_stats_people_count_parent_object.find_element_by_xpath(movie_stats_people_count_path)
+            movie_stats_people_count_content = self.get_mao_yan_num(woff_url, movie_stats_people_count_object.text, "stats_people_count.png")
+            # movie_stats_people_count_content = self.get_mao_yan_num_by_object(movie_stats_people_count_object, "stats_people_count.png")
+            temp_movie_stats_people_count_unit_content = movie_stats_people_count_object.text
+            print("temp_movie_stats_people_count_unit_content = ", temp_movie_stats_people_count_unit_content, len(temp_movie_stats_people_count_unit_content))
+            movie_stats_people_count_unit_content = temp_movie_stats_people_count_unit_content[len(temp_movie_stats_people_count_unit_content)-1:len(temp_movie_stats_people_count_unit_content)]
 
-            print("movie_avatar_url = %s" % movie_avatar_url)
-            print("movie_name = %s" % movie_name)
-            print("movie_en_name = %s" % movie_en_name)
-            print("movie_category = %s" % movie_category)
-            print("movie_country = %s" % movie_country)
-            print("movie_duration = %s" % movie_duration)
-            print("movie_release_info = %s" % movie_release_info)
-            print("temp_movie_score_content = ", temp_movie_score_content, "\n")
-            # print("movie_score_content = ", movie_score_content, len(movie_score_content))
-            # print("movie_score_content = ", ('\\u' in movie_score_content[0].encode('unicode_escape').decode()))
+            movie_box_path = ".//div[@class='movie-index-content box']"
+            movie_box_object = movie_stats_object.find_element_by_xpath(movie_box_path)
 
-            self.get_mao_yan_num(woff_url, temp_movie_score_content)
+            movie_box_value_path = ".//span[@class='stonefont']"
+            movie_box_value_object = movie_box_object.find_element_by_xpath(movie_box_value_path)
+            movie_box_value_content = self.get_mao_yan_num(woff_url, movie_box_value_object.text, "box.png")
+            # movie_box_value_content = self.get_mao_yan_num_by_object(movie_box_value_object, "box.png")
+
+            movie_box_unit_path = ".//span[@class='unit']"
+            movie_box_unit_object = movie_box_object.find_element_by_xpath(movie_box_unit_path)
+            movie_box_unit_content = movie_box_unit_object.text
+
+
+            print("movie_avatar_url = ", movie_avatar_url)
+            print("movie_name = ", movie_name)
+            print("movie_en_name ", movie_en_name)
+            print("movie_category ", movie_category)
+            print("movie_country = ", movie_country)
+            print("movie_duration = ", movie_duration)
+            print("movie_release_info = ", movie_release_info)
+            print("movie_release_time = ", movie_release_time)
+            print("movie_release_area = ", movie_release_area)
+            print("movie_score_content = ", movie_score_content)
+            print("movie_stats_people_count_content = ", movie_stats_people_count_content)
+            print("movie_stats_people_count_unit_content = ", movie_stats_people_count_unit_content)
+            print("movie_box_value_content = ", movie_box_value_content)
+            print("movie_box_unit_content = ", movie_box_unit_content)
 
         except NoSuchElementException as noSuchElementException:
             print(noSuchElementException)
 
         driver.close()
 
-    def get_mao_yan_num(self, woff_url, num_content):
+    def get_mao_yan_num(self, woff_url, num_content, img_save_name):
         print("get_mao_yan_num::num_content = ", num_content)
         print("get_mao_yan_num::woff_url = ", woff_url)
 
@@ -161,7 +185,7 @@ class RequestNowMaoYan(BaseRequest):
         new_file_path = 'file://' + os.path.abspath('new_maoyan_detail.html')
         print("get_mao_yan_num::new_file_path = ", new_file_path)
         new_driver = self.get_web_content(new_file_path)
-        new_driver.get_screenshot_as_file('new_maoyan_detail.png')
+        new_driver.get_screenshot_as_file(img_save_name)
         print("get_mao_yan_num::page_source = ", new_driver.page_source)
         num_pic_base64 = new_driver.get_screenshot_as_base64()
         print("get_mao_yan_num::num_pic_base64 = ", num_pic_base64)
@@ -174,10 +198,63 @@ class RequestNowMaoYan(BaseRequest):
         print('baidu_token = ', baidu_token_result_json['access_token'])
 
         postdata = {'access_token': baidu_token_result_json['access_token'], 'image': num_pic_base64}
-        result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic', data=postdata)
+        # result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic', data=postdata)
+        result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic', data=postdata)
+        # result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/webimage', data=postdata)
         # result =  {"log_id": 2337563219107430326, "words_result_num": 1, "words_result": [{"words": "9.4"}]}
         print("result = ", result.text)
-        return result.text
+        result_json_object = json.loads(result.text)
+
+        words = ''
+        if 'words_result' in result_json_object:
+            words_result = result_json_object['words_result']
+            if len(words_result) > 0:
+                words = words_result[0]['words']
+                words_find_result = re.findall('(\\d+.?\\d+).*?', words, re.S)
+                if len(words_find_result) > 0:
+                    words = words_find_result[0]
+
+        print("words = ", words)
+
+        return words
+
+    # def get_mao_yan_num_by_object(self, num_object, img_save_name):
+    #
+    #     num_object.screenshot(img_save_name)
+    #
+    #     num_pic_base64_data = ''
+    #     with open(img_save_name, 'rb') as f:
+    #         base64_data = base64.b64encode(f.read())
+    #         s = base64_data.decode()
+    #         # print('data:image/jpeg;base64,%s' % s)
+    #         num_pic_base64_data = num_pic_base64_data + s
+    #
+    #     baidu_token_result = requests.get(
+    #         'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=Wk03dOF1kRG1SnajCmyKELNx&client_secret=XAqRaMFFCUY2ZUGNSvtGsL8ZYbYRkERp&')
+    #     print('baidu_token_result_json = ', baidu_token_result.text)
+    #     baidu_token_result_json = json.loads(baidu_token_result.text)
+    #     print('baidu_token = ', baidu_token_result_json['access_token'])
+    #
+    #     postdata = {'access_token': baidu_token_result_json['access_token'], 'image': num_pic_base64_data}
+    #     # result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic', data=postdata)
+    #     result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic', data=postdata)
+    #     # result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/webimage', data=postdata)
+    #     # result =  {"log_id": 2337563219107430326, "words_result_num": 1, "words_result": [{"words": "9.4"}]}
+    #     print("result = ", result.text)
+    #     result_json_object = json.loads(result.text)
+    #
+    #     words = ''
+    #     if 'words_result' in result_json_object:
+    #         words_result = result_json_object['words_result']
+    #         if len(words_result) > 0:
+    #             words = words_result[0]['words']
+    #             words_find_result = re.findall('(\\d+.?\\d+).*?', words, re.S)
+    #             if len(words_find_result) > 0:
+    #                 words = words_find_result[0]
+    #
+    #     print("words = ", words)
+    #
+    #     return words
 
     def login_mao_yan(self):
         driver = self.get_web_content(
@@ -195,7 +272,8 @@ class RequestNowMaoYan(BaseRequest):
 
 if __name__ == "__main__":
     requestNowMaoYan = RequestNowMaoYan()
-    requestNowMaoYan.request("1211270", "https://maoyan.com/films/1230121")
+    # requestNowMaoYan.request("1211270", "https://maoyan.com/films/1230121")
+    requestNowMaoYan.request("1211270", "https://maoyan.com/films/1211270")
     # requestNowMaoYan.request("1211270", "https://passport.meituan.com/account/unitivelogin?service=maoyan&continue=https%3A%2F%2Fmaoyan.com%2Fpassport%2Flogin%3Fredirect%3D%252F")
 
     # new_driver = requestNowMaoYan.get_web_content("file:///home/mi/zxl/workspace/my_github/joke_spider/com_zxl_spider_request/new_maoyan_detail.html")
