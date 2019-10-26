@@ -9,7 +9,7 @@ from com_zxl_spider_db.MaoYanDB import MaoYanDB
 from com_zxl_spider_request.BaseRequest import BaseRequest
 
 
-class RequestNowMaoYan(BaseRequest):
+class RequestMaoYan(BaseRequest):
 
     mao_yan_now_db = None
     mao_yan_future_db = None
@@ -19,9 +19,6 @@ class RequestNowMaoYan(BaseRequest):
         self.mao_yan_now_db = MaoYanDB(MaoYanDB.NOW_TABLE_NAME)
         self.mao_yan_future_db = MaoYanDB(MaoYanDB.FUTURE_TABLE_NAME)
         self.mao_yan_history_db = MaoYanDB(MaoYanDB.HISTORY_TABLE_NAME)
-
-        self.mao_yan_now_db.delete_all()
-        self.mao_yan_future_db.delete_all()
 
     def request(self, type, url):
         print("request::type = %d " % type)
@@ -113,15 +110,16 @@ class RequestNowMaoYan(BaseRequest):
         self.mao_yan_future_db.close_db()
         self.mao_yan_history_db.close_db()
 
-    def start(self):
+    def start_now_mao_yan(self):
+        self.mao_yan_now_db.delete_all()
         self.request(1, "https://maoyan.com/films?showType=1")
-        self.request(2, "https://maoyan.com/films?showType=2")
-        self.request(3, "https://maoyan.com/films?showType=3")
+        # self.request(2, "https://maoyan.com/films?showType=2")
+        # self.request(3, "https://maoyan.com/films?showType=3")
         self.close_db()
 
 
 if __name__ == "__main__":
-    request = RequestNowMaoYan()
+    request = RequestMaoYan()
     # 正在热映
     # request.request(1, "https://maoyan.com/films?showType=1")
     # 即将
@@ -130,5 +128,5 @@ if __name__ == "__main__":
     # request.request(3, "https://maoyan.com/films?showType=3")
     # request.close_db()
 
-    request.start()
+    request.start_now_mao_yan()
 

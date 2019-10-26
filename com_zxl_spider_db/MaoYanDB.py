@@ -29,6 +29,7 @@ class MaoYanDB(BaseDB):
     DELETE_SQL = ''
 
     QUERY_BY_MOVIE_ID = ''
+    QUERY_ALL = ''
 
     def __init__(self, table_name):
         self.TABLE_NAME = table_name
@@ -66,6 +67,15 @@ class MaoYanDB(BaseDB):
                              + " FROM " + self.TABLE_NAME
                              + " WHERE " + self.COLUME_MOVIE_ID + " = '%s'")
 
+        self.QUERY_ALL = ("SELECT "
+                             + self.COLUME_ID + ","
+                             + self.COLUME_MOVIE_ID + ","
+                             + self.COLUME_MOVIE_TITLE + ","
+                             + self.COLUME_MOVIE_POSTER_URL + ","
+                             + self.COLUME_MOVIE_DETAIL_URL + ","
+                             + self.COLUME_MOVIE_TYPE
+                             + " FROM " + self.TABLE_NAME)
+
         super(MaoYanDB, self).__init__()
 
     def create_insert_data(self, mao_yan_bean):
@@ -100,3 +110,24 @@ class MaoYanDB(BaseDB):
                                              COLUME_MOVIE_DETAIL_URL,
                                              COLUME_MOVIE_TYPE)
         return None
+
+    def query_all(self):
+        cursor = self.query(self.QUERY_ALL)
+
+        mao_yan_bean_list = []
+
+        for (COLUME_ID,
+             COLUME_MOVIE_ID,
+             COLUME_MOVIE_TITLE,
+             COLUME_MOVIE_POSTER_URL,
+             COLUME_MOVIE_DETAIL_URL,
+             COLUME_MOVIE_TYPE) in cursor:
+            mao_yan_bean = MaoYanBean()
+            mao_yan_bean = mao_yan_bean.create_bean(COLUME_ID,
+                                             COLUME_MOVIE_ID,
+                                             COLUME_MOVIE_TITLE,
+                                             COLUME_MOVIE_POSTER_URL,
+                                             COLUME_MOVIE_DETAIL_URL,
+                                             COLUME_MOVIE_TYPE)
+            mao_yan_bean_list.append(mao_yan_bean)
+        return mao_yan_bean_list
