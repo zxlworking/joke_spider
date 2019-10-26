@@ -10,7 +10,7 @@ s = sched.scheduler(time.time, time.sleep)
 
 
 def start():
-    s.enter(24 * 3600, 1, start_request_now_mao_yan_task, ())
+    s.enter(12 * 3600, 1, start_request_now_mao_yan_task, ())
     s.run()
 
 
@@ -21,9 +21,9 @@ def start_request_now_mao_yan_task():
     requestMaoYanDetail = RequestMaoYanDetail()
     requestMaoYanDetail.request_now_mao_yan_detail()
 
-    # start()
+    start()
 
 
 if __name__ == '__main__':
-    # start()
-    start_request_now_mao_yan_task()
+    start()
+    # start_request_now_mao_yan_task()
