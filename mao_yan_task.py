@@ -10,7 +10,7 @@ s = sched.scheduler(time.time, time.sleep)
 
 
 def start():
-    s.enter(12 * 3600, 1, start_request_now_mao_yan_task, ())
+    s.enter(6 * 3600, 1, start_request_now_mao_yan_task, ())
     s.run()
 
 
