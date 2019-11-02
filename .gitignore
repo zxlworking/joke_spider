@@ -2,3 +2,6 @@
 .idea
 /*/*pycache*
 *.pyc
+*.png
+*.xml
+*.woff

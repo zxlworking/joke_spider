@@ -8,8 +8,10 @@ import time
 from pathlib import Path
 from urllib import request
 
+import PIL.Image, PIL.ImageFont, PIL.ImageDraw
 import requests
 from fontTools.ttLib import TTFont
+from pytesseract import pytesseract
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -32,6 +34,9 @@ from com_zxl_spider_request.BaseRequest import BaseRequest
 
 class RequestMaoYanDetail(BaseRequest):
 
+    fontdict = {'uniE997': '0', 'uniEE22': '8', 'uniE526': '9', 'uniF652': '2', 'uniE811': '6', 'uniE635': '3', 'uniF85A': '1', 'uniE6D4': '4', 'uniE9C8': '5', 'uniEA6D': '7'}
+
+
     parent_path = ''
 
     def __init__(self):
@@ -41,12 +46,12 @@ class RequestMaoYanDetail(BaseRequest):
         print("request::movie_id = %s " % movie_id)
         print("request::movie_detail_url = %s " % movie_detail_url)
 
-        driver = self.get_web_content(movie_detail_url)
+        # driver = self.get_web_content(movie_detail_url)
 
-        # driver = self.login_mao_yan()
-        # driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')  # 触发ctrl + t
-        # time.sleep(5)
-        # driver.get(movie_detail_url)
+        driver = self.login_mao_yan()
+        driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')  # 触发ctrl + t
+        time.sleep(5)
+        driver.get(movie_detail_url)
 
         page_content = driver.page_source
         # print(page_content)
@@ -152,8 +157,8 @@ class RequestMaoYanDetail(BaseRequest):
                 movie_score_object = movie_stats_object.find_element_by_xpath(movie_score_path)
                 movie_score_content_path = ".//span"
                 movie_score_content_object = movie_score_object.find_element_by_xpath(movie_score_content_path)
-                movie_score_content = self.get_mao_yan_num(woff_url, movie_score_content_object.text, self.parent_path + "score.png")
-                # movie_score_content = self.get_mao_yan_num_by_object(movie_score_content_object, self.parent_path + "score.png")
+                # movie_score_content = self.get_mao_yan_num(woff_url, movie_score_content_object.text, self.parent_path + "score.png")
+                movie_score_content = self.get_mao_yan_num_by_object(movie_score_content_object.text, 'mao_yan_font.woff', self.parent_path + "score.png")
             except NoSuchElementException as no_movie_score_content_exception:
                 print("no_movie_score_content_exception = ", no_movie_score_content_exception)
 
@@ -170,9 +175,8 @@ class RequestMaoYanDetail(BaseRequest):
                 movie_stats_people_count_path = ".//span"
                 movie_stats_people_count_object = movie_stats_people_count_parent_object.find_element_by_xpath(
                     movie_stats_people_count_path)
-                movie_stats_people_count_content = self.get_mao_yan_num(woff_url, movie_stats_people_count_object.text,
-                                                                        self.parent_path + "stats_people_count.png")
-                # movie_stats_people_count_content = self.get_mao_yan_num_by_object(movie_stats_people_count_object, self.parent_path + "stats_people_count.png")
+                # movie_stats_people_count_content = self.get_mao_yan_num(woff_url, movie_stats_people_count_object.text, self.parent_path + "stats_people_count.png")
+                movie_stats_people_count_content = self.get_mao_yan_num_by_object(movie_stats_people_count_object.text, 'mao_yan_font.woff', self.parent_path + "stats_people_count.png")
                 temp_movie_stats_people_count_unit_content = movie_stats_people_count_object.text
                 print("movie_stats_people_count_content = ", movie_stats_people_count_content,
                       len(movie_stats_people_count_content))
@@ -199,8 +203,8 @@ class RequestMaoYanDetail(BaseRequest):
 
                 movie_box_value_path = ".//span[@class='stonefont']"
                 movie_box_value_object = movie_box_object.find_element_by_xpath(movie_box_value_path)
-                movie_box_value_content = self.get_mao_yan_num(woff_url, movie_box_value_object.text, self.parent_path + "box.png")
-                # movie_box_value_content = self.get_mao_yan_num_by_object(movie_box_value_object, self.parent_path + "box.png")
+                # movie_box_value_content = self.get_mao_yan_num(woff_url, movie_box_value_object.text, self.parent_path + "box.png")
+                movie_box_value_content = self.get_mao_yan_num_by_object(movie_box_value_object.text, 'mao_yan_font.woff', self.parent_path + "box.png")
 
                 movie_box_unit_path = ".//span[@class='unit']"
                 movie_box_unit_object = movie_box_object.find_element_by_xpath(movie_box_unit_path)
@@ -333,120 +337,82 @@ class RequestMaoYanDetail(BaseRequest):
 
         driver.close()
 
-    def get_mao_yan_num(self, woff_url, num_content, img_save_name):
-        # print("get_mao_yan_num::num_content = ", num_content)
-        # print("get_mao_yan_num::woff_url = ", woff_url)
-
-        request_baidu_count_lines = []
-        if Path(self.parent_path + "request_baidu_count.txt").is_file():
-            print("request_baidu_count file exist")
-            request_baidu_count_file = open(self.parent_path + "request_baidu_count.txt", "r")
-            request_baidu_count_lines = request_baidu_count_file.readlines()
-            request_baidu_count_file.close()
-        print("get_mao_yan_num::request_baidu_count_lines = ", request_baidu_count_lines)
-
-        temp_current_time = time.strftime("%Y-%m-%d", time.localtime()) + '\n'
-        print("get_mao_yan_num::temp_current_time = ", temp_current_time)
-
-        count = 1
-        if len(request_baidu_count_lines) == 2:
-            last_time = request_baidu_count_lines[0]
-            print("get_mao_yan_num::last_time = ", last_time, "---isSame---", (last_time == temp_current_time))
-            count = int(request_baidu_count_lines[1])
-            count = count + 1
-            print("get_mao_yan_num::count = ", count)
-            if count > 500:
-                if last_time == temp_current_time:
-                    return "-1"
-                else:
-                    count = 1
-
-        request_baidu_count_file = open(self.parent_path + "request_baidu_count.txt", "w")
-        request_baidu_count_file.write(time.strftime("%Y-%m-%d", time.localtime()))
-        request_baidu_count_file.write('\n')
-        request_baidu_count_file.write(str(count))
-        request_baidu_count_file.close()
-
-        replace_woff_url = '------'
-        replace_num_content = '======'
-
-        temp_file = open(self.parent_path + 'base_maoyan_detail.html', 'r', encoding='utf-8')
-        new_file = open(self.parent_path + 'new_maoyan_detail.html', 'wb')
-
-        line = temp_file.readline()
-        while len(line) > 0:
-            if replace_woff_url in line:
-                line = line.replace(replace_woff_url, woff_url)
-            if replace_num_content in line:
-                line = line.replace(replace_num_content, num_content)
-            line = line.replace("\n", "")
-            new_file.write(line.encode())
-            line = temp_file.readline()
-            # print("get_mao_yan_num::line = ", line)
-            # print("get_mao_yan_num::len(line) = ", len(line))
-
-        new_file.close()
-        temp_file.close()
-
-        new_file_path = 'file://' + os.path.abspath(self.parent_path + 'new_maoyan_detail.html')
-        # print("get_mao_yan_num::new_file_path = ", new_file_path)
-        new_driver = self.get_web_content(new_file_path)
-        new_driver.get_screenshot_as_file(img_save_name)
-        # print("get_mao_yan_num::page_source = ", new_driver.page_source)
-        num_pic_base64 = new_driver.get_screenshot_as_base64()
-        # print("get_mao_yan_num::num_pic_base64 = ", num_pic_base64)
-        new_driver.close()
-
-        baidu_token_result = requests.get(
-            'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=Wk03dOF1kRG1SnajCmyKELNx&client_secret=XAqRaMFFCUY2ZUGNSvtGsL8ZYbYRkERp&')
-        # print('baidu_token_result_json = ', baidu_token_result.text)
-        baidu_token_result_json = json.loads(baidu_token_result.text)
-        # print('baidu_token = ', baidu_token_result_json['access_token'])
-
-        postdata = {'access_token': baidu_token_result_json['access_token'], 'image': num_pic_base64}
-        # result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic', data=postdata)
-        result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic', data=postdata)
-        # result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/webimage', data=postdata)
-        # result =  {"log_id": 2337563219107430326, "words_result_num": 1, "words_result": [{"words": "9.4"}]}
-        print("result = ", result.text, "\n")
-        result_json_object = json.loads(result.text)
-
-        words = ''
-        if 'words_result' in result_json_object:
-            words_result = result_json_object['words_result']
-            if len(words_result) > 0:
-                words = words_result[0]['words']
-                words_find_result = re.findall('(\\d+.?\\d+).*?', words, re.S)
-                if len(words_find_result) > 0:
-                    words = words_find_result[0]
-
-        # print("words = ", words)
-
-        return words
-
-    # def get_mao_yan_num_by_object(self, num_object, img_save_name):
+    # def get_mao_yan_num(self, woff_url, num_content, img_save_name):
+    #     # print("get_mao_yan_num::num_content = ", num_content)
+    #     # print("get_mao_yan_num::woff_url = ", woff_url)
     #
-    #     num_object.screenshot(img_save_name)
+    #     request_baidu_count_lines = []
+    #     if Path(self.parent_path + "request_baidu_count.txt").is_file():
+    #         print("request_baidu_count file exist")
+    #         request_baidu_count_file = open(self.parent_path + "request_baidu_count.txt", "r")
+    #         request_baidu_count_lines = request_baidu_count_file.readlines()
+    #         request_baidu_count_file.close()
+    #     print("get_mao_yan_num::request_baidu_count_lines = ", request_baidu_count_lines)
     #
-    #     num_pic_base64_data = ''
-    #     with open(img_save_name, 'rb') as f:
-    #         base64_data = base64.b64encode(f.read())
-    #         s = base64_data.decode()
-    #         # print('data:image/jpeg;base64,%s' % s)
-    #         num_pic_base64_data = num_pic_base64_data + s
+    #     temp_current_time = time.strftime("%Y-%m-%d", time.localtime()) + '\n'
+    #     print("get_mao_yan_num::temp_current_time = ", temp_current_time)
+    #
+    #     count = 1
+    #     if len(request_baidu_count_lines) == 2:
+    #         last_time = request_baidu_count_lines[0]
+    #         print("get_mao_yan_num::last_time = ", last_time, "---isSame---", (last_time == temp_current_time))
+    #         count = int(request_baidu_count_lines[1])
+    #         count = count + 1
+    #         print("get_mao_yan_num::count = ", count)
+    #         if count > 500:
+    #             if last_time == temp_current_time:
+    #                 return "-1"
+    #             else:
+    #                 count = 1
+    #
+    #     request_baidu_count_file = open(self.parent_path + "request_baidu_count.txt", "w")
+    #     request_baidu_count_file.write(time.strftime("%Y-%m-%d", time.localtime()))
+    #     request_baidu_count_file.write('\n')
+    #     request_baidu_count_file.write(str(count))
+    #     request_baidu_count_file.close()
+    #
+    #     replace_woff_url = '------'
+    #     replace_num_content = '======'
+    #
+    #     temp_file = open(self.parent_path + 'base_maoyan_detail.html', 'r', encoding='utf-8')
+    #     new_file = open(self.parent_path + 'new_maoyan_detail.html', 'wb')
+    #
+    #     line = temp_file.readline()
+    #     while len(line) > 0:
+    #         if replace_woff_url in line:
+    #             line = line.replace(replace_woff_url, woff_url)
+    #         if replace_num_content in line:
+    #             line = line.replace(replace_num_content, num_content)
+    #         line = line.replace("\n", "")
+    #         new_file.write(line.encode())
+    #         line = temp_file.readline()
+    #         # print("get_mao_yan_num::line = ", line)
+    #         # print("get_mao_yan_num::len(line) = ", len(line))
+    #
+    #     new_file.close()
+    #     temp_file.close()
+    #
+    #     new_file_path = 'file://' + os.path.abspath(self.parent_path + 'new_maoyan_detail.html')
+    #     # print("get_mao_yan_num::new_file_path = ", new_file_path)
+    #     new_driver = self.get_web_content(new_file_path)
+    #     new_driver.get_screenshot_as_file(self.parent_path +img_save_name)
+    #     # print("get_mao_yan_num::page_source = ", new_driver.page_source)
+    #     num_pic_base64 = new_driver.get_screenshot_as_base64()
+    #     # print("get_mao_yan_num::num_pic_base64 = ", num_pic_base64)
+    #     new_driver.close()
     #
     #     baidu_token_result = requests.get(
     #         'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=Wk03dOF1kRG1SnajCmyKELNx&client_secret=XAqRaMFFCUY2ZUGNSvtGsL8ZYbYRkERp&')
-    #     print('baidu_token_result_json = ', baidu_token_result.text)
+    #     # print('baidu_token_result_json = ', baidu_token_result.text)
     #     baidu_token_result_json = json.loads(baidu_token_result.text)
-    #     print('baidu_token = ', baidu_token_result_json['access_token'])
+    #     # print('baidu_token = ', baidu_token_result_json['access_token'])
     #
-    #     postdata = {'access_token': baidu_token_result_json['access_token'], 'image': num_pic_base64_data}
+    #     postdata = {'access_token': baidu_token_result_json['access_token'], 'image': num_pic_base64}
     #     # result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic', data=postdata)
     #     result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic', data=postdata)
     #     # result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/webimage', data=postdata)
     #     # result =  {"log_id": 2337563219107430326, "words_result_num": 1, "words_result": [{"words": "9.4"}]}
-    #     print("result = ", result.text)
+    #     print("result = ", result.text, "\n")
     #     result_json_object = json.loads(result.text)
     #
     #     words = ''
@@ -458,9 +424,52 @@ class RequestMaoYanDetail(BaseRequest):
     #             if len(words_find_result) > 0:
     #                 words = words_find_result[0]
     #
-    #     print("words = ", words)
+    #     # print("words = ", words)
     #
     #     return words
+
+    def get_mao_yan_num_by_object(self, num_content, woff_font_file, img_save_name):
+        print("get_mao_yan_num_by_object::num_content = ", num_content)
+        print("get_mao_yan_num_by_object::woff_font_file = ", woff_font_file)
+        print("get_mao_yan_num_by_object::img_save_name = ", img_save_name)
+
+        if '万' in num_content:
+            num_content = num_content[:len(num_content) - 1]
+
+        num_content_find_result = num_content.split('.')
+        print("get_mao_yan_num_by_object::num_content_find_result = ", num_content_find_result)
+
+
+        image = PIL.Image
+        ImageDraw = PIL.ImageDraw
+        ImageFont = PIL.ImageFont
+
+        num_result = ''
+        index = len(num_content_find_result)
+        for num_content_item_find_result in num_content_find_result:
+            text = num_content_item_find_result
+            print("get_mao_yan_num_by_object::text = ", text)
+
+            im = image.new("RGB", (300, 50), (255, 255, 255))
+            dr = ImageDraw.Draw(im)
+            font = ImageFont.truetype(os.path.join(woff_font_file), 14)
+
+            dr.text((10, 5), text + text, font=font, fill="#000000")
+
+            # im.show()
+            im.save(img_save_name)
+
+            image2 = PIL.Image.open(img_save_name)
+            code = pytesseract.image_to_string(image2)
+            print("get_mao_yan_num_by_object::code = ", code)
+
+            num_result = num_result + code[0:int(len(code)/2)]
+            if index == 2:
+                num_result = num_result + "."
+            index = 0
+
+        print("get_mao_yan_num_by_object::num_result = ", num_result)
+        return num_result
 
     def parse_tab_celebrity_list(self, movie_id, tab_celebrity_list_object):
         if tab_celebrity_list_object is not None:
@@ -681,27 +690,31 @@ class RequestMaoYanDetail(BaseRequest):
         login_input.click()
         time.sleep(10)
         print("login success")
+        # while True:
+        #     pass
         return driver
 
     def request_now_mao_yan_detail(self):
-        mao_yan_now_db = MaoYanDB(MaoYanDB.NOW_TABLE_NAME)
-        mao_yan_bean_list = mao_yan_now_db.query_all()
-        mao_yan_now_db.close_db()
-        # i = 0
-        for mao_yan_bean in mao_yan_bean_list:
-            result = self.request(mao_yan_bean['movie_id'], mao_yan_bean['movie_detail_url'])
-            print("request_now_mao_yan_detail::result = ", result)
-            # i = i + 1
-            # if i == 1:
-            #     break
-            if result == '-1':
-                break
+        # mao_yan_now_db = MaoYanDB(MaoYanDB.NOW_TABLE_NAME)
+        # mao_yan_bean_list = mao_yan_now_db.query_all()
+        # mao_yan_now_db.close_db()
+        # # i = 0
+        # for mao_yan_bean in mao_yan_bean_list:
+        #     result = self.request(mao_yan_bean['movie_id'], mao_yan_bean['movie_detail_url'])
+        #     print("request_now_mao_yan_detail::result = ", result)
+        #     # i = i + 1
+        #     # if i == 1:
+        #     #     break
+        #     if result == '-1':
+        #         break
+
+        self.request("267", "https://maoyan.com/films/267")
 
 
 
 if __name__ == "__main__":
     requestMaoYanDetail = RequestMaoYanDetail()
-    requestMaoYanDetail.parent_path = '../'
+    # requestMaoYanDetail.parent_path = '../'
     # 267,1250952
     # requestMaoYanDetail.request("267", "https://maoyan.com/films/267")
     requestMaoYanDetail.request("1211270", "https://maoyan.com/films/1211270")
