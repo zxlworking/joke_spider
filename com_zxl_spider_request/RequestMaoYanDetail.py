@@ -46,12 +46,12 @@ class RequestMaoYanDetail(BaseRequest):
         print("request::movie_id = %s " % movie_id)
         print("request::movie_detail_url = %s " % movie_detail_url)
 
-        # driver = self.get_web_content(movie_detail_url)
+        driver = self.get_web_content(movie_detail_url)
 
-        driver = self.login_mao_yan()
-        driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')  # 触发ctrl + t
-        time.sleep(5)
-        driver.get(movie_detail_url)
+        # driver = self.login_mao_yan()
+        # driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')  # 触发ctrl + t
+        # time.sleep(5)
+        # driver.get(movie_detail_url)
 
         page_content = driver.page_source
         # print(page_content)
@@ -695,20 +695,20 @@ class RequestMaoYanDetail(BaseRequest):
         return driver
 
     def request_now_mao_yan_detail(self):
-        # mao_yan_now_db = MaoYanDB(MaoYanDB.NOW_TABLE_NAME)
-        # mao_yan_bean_list = mao_yan_now_db.query_all()
-        # mao_yan_now_db.close_db()
-        # # i = 0
-        # for mao_yan_bean in mao_yan_bean_list:
-        #     result = self.request(mao_yan_bean['movie_id'], mao_yan_bean['movie_detail_url'])
-        #     print("request_now_mao_yan_detail::result = ", result)
-        #     # i = i + 1
-        #     # if i == 1:
-        #     #     break
-        #     if result == '-1':
-        #         break
+        mao_yan_now_db = MaoYanDB(MaoYanDB.NOW_TABLE_NAME)
+        mao_yan_bean_list = mao_yan_now_db.query_all()
+        mao_yan_now_db.close_db()
+        # i = 0
+        for mao_yan_bean in mao_yan_bean_list:
+            result = self.request(mao_yan_bean['movie_id'], mao_yan_bean['movie_detail_url'])
+            print("request_now_mao_yan_detail::movie_id = ", mao_yan_bean['movie_id'], "::result = ", result)
+            # i = i + 1
+            # if i == 1:
+            #     break
+            if result == '-1':
+                break
 
-        self.request("267", "https://maoyan.com/films/267")
+        # self.request("267", "https://maoyan.com/films/267")
 
 
 
