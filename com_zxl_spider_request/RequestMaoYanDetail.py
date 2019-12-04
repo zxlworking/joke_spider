@@ -151,6 +151,17 @@ class RequestMaoYanDetail(BaseRequest):
             movie_stats_path = ".//div[@class='movie-stats-container']"
             movie_stats_object = movie_introduce_object.find_element_by_xpath(movie_stats_path)
 
+            movie_want_to_see_count = ''
+            try:
+                movie_want_to_see_content_path = ".//span[@class='index-left info-num one-line']"
+                movie_want_to_see_content_object = movie_stats_object.find_element_by_xpath(movie_want_to_see_content_path)
+                movie_want_to_see_count_path = ".//span"
+                movie_want_to_see_count_object = movie_want_to_see_content_object.find_element_by_xpath(movie_want_to_see_count_path)
+                movie_want_to_see_count = movie_want_to_see_count_object.text
+                movie_want_to_see_count = self.get_mao_yan_num_by_object(movie_want_to_see_count, 'mao_yan_font.woff', self.parent_path + "want_to_see.png")
+            except NoSuchElementException as no_movie_want_to_see_content_exception:
+                print("no_movie_want_to_see_content_exception = ", no_movie_want_to_see_content_exception)
+
             movie_score_content = ''
             try:
                 movie_score_path = ".//span[@class='index-left info-num ']"
@@ -287,6 +298,7 @@ class RequestMaoYanDetail(BaseRequest):
             print("movie_release_time = ", movie_release_time)
             print("movie_release_area = ", movie_release_area)
             print("movie_score_content = ", movie_score_content)
+            print("movie_want_to_see_count = ", movie_want_to_see_count)
             print("movie_stats_people_count_content = ", movie_stats_people_count_content)
             print("movie_stats_people_count_unit_content = ", movie_stats_people_count_unit_content)
             print("movie_box_value_content = ", movie_box_value_content)
@@ -310,6 +322,7 @@ class RequestMaoYanDetail(BaseRequest):
                 movie_release_time,
                 movie_release_area,
                 movie_score_content,
+                movie_want_to_see_count,
                 movie_stats_people_count_content,
                 movie_stats_people_count_unit_content,
                 movie_box_value_content,
@@ -439,22 +452,17 @@ class RequestMaoYanDetail(BaseRequest):
         num_content_find_result = num_content.split('.')
         print("get_mao_yan_num_by_object::num_content_find_result = ", num_content_find_result)
 
-
-        image = PIL.Image
-        ImageDraw = PIL.ImageDraw
-        ImageFont = PIL.ImageFont
-
         num_result = ''
         index = len(num_content_find_result)
         for num_content_item_find_result in num_content_find_result:
             text = num_content_item_find_result
             print("get_mao_yan_num_by_object::text = ", text)
 
-            im = image.new("RGB", (300, 50), (255, 255, 255))
-            dr = ImageDraw.Draw(im)
-            font = ImageFont.truetype(os.path.join(woff_font_file), 14)
+            im = PIL.Image.new("RGB", (300, 60), (255, 255, 255))
+            dr = PIL.ImageDraw.Draw(im)
+            font = PIL.ImageFont.truetype(os.path.join(woff_font_file), 30)
 
-            dr.text((10, 5), text + text, font=font, fill="#000000")
+            dr.text((10, 15), text + text + text + text, font=font, fill="#000000")
 
             # im.show()
             im.save(img_save_name)
@@ -492,7 +500,7 @@ class RequestMaoYanDetail(BaseRequest):
             # print("words = ", words)
 
 
-            num_result = num_result + code[0:int(len(code)/2)]
+            num_result = num_result + code[0:int(len(code) / 4)]
             if index == 2:
                 num_result = num_result + "."
             index = 0
@@ -740,7 +748,7 @@ class RequestMaoYanDetail(BaseRequest):
             if result == '-1':
                 break
 
-        # self.request("267", "https://maoyan.com/films/267")
+        # self.request("1218029", "https://maoyan.com/films/1218029")
 
 
 

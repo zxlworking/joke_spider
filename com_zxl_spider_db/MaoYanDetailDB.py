@@ -20,6 +20,7 @@ class MaoYanDetailDB(BaseDB):
     COLUME_MOVIE_RELEASE_TIME = 'movie_release_time'
     COLUME_MOVIE_RELEASE_AREA = 'movie_release_area'
     COLUME_MOVIE_SCORE_CONTENT = 'movie_score_content'
+    COLUME_MOVIE_WANT_TO_SEE_COUNT = 'movie_want_to_see_count'
     COLUME_MOVIE_STATS_PEOPLE_COUNT_CONTENT = 'movie_stats_people_count_content'
     COLUME_MOVIE_STATS_PEOPLE_COUNT_UNIT_CONTENT = 'movie_stats_people_count_unit_content'
     COLUME_MOVIE_BOX_VALUE_CONTENT = 'movie_box_value_content'
@@ -53,6 +54,7 @@ class MaoYanDetailDB(BaseDB):
                 + self.COLUME_MOVIE_RELEASE_TIME + "  text,"
                 + self.COLUME_MOVIE_RELEASE_AREA + "  text,"
                 + self.COLUME_MOVIE_SCORE_CONTENT + "  text,"
+                + self.COLUME_MOVIE_WANT_TO_SEE_COUNT + "  text,"
                 + self.COLUME_MOVIE_STATS_PEOPLE_COUNT_CONTENT + "  text,"
                 + self.COLUME_MOVIE_STATS_PEOPLE_COUNT_UNIT_CONTENT + "  text,"
                 + self.COLUME_MOVIE_BOX_VALUE_CONTENT + "  text,"
@@ -73,13 +75,14 @@ class MaoYanDetailDB(BaseDB):
                            + self.COLUME_MOVIE_RELEASE_TIME + ","
                            + self.COLUME_MOVIE_RELEASE_AREA + ","
                            + self.COLUME_MOVIE_SCORE_CONTENT + ","
+                           + self.COLUME_MOVIE_WANT_TO_SEE_COUNT + ","
                            + self.COLUME_MOVIE_STATS_PEOPLE_COUNT_CONTENT + ","
                            + self.COLUME_MOVIE_STATS_PEOPLE_COUNT_UNIT_CONTENT + ","
                            + self.COLUME_MOVIE_BOX_VALUE_CONTENT + ","
                            + self.COLUME_MOVIE_BOX_UNIT_CONTENT + ","
                            + self.COLUME_MOVIE_INTRODUCE_CONTENT
                            + ") "
-                           + "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
+                           + "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
         self.DELETE_SQL = ("DELETE FROM " + self.TABLE_NAME)
 
@@ -94,6 +97,7 @@ class MaoYanDetailDB(BaseDB):
                                    + self.COLUME_MOVIE_RELEASE_TIME + " = '%s', "
                                    + self.COLUME_MOVIE_RELEASE_AREA + " = '%s', "
                                    + self.COLUME_MOVIE_SCORE_CONTENT + " = '%s', "
+                                   + self.COLUME_MOVIE_WANT_TO_SEE_COUNT + " = '%s', "
                                    + self.COLUME_MOVIE_STATS_PEOPLE_COUNT_CONTENT + " = '%s', "
                                    + self.COLUME_MOVIE_STATS_PEOPLE_COUNT_UNIT_CONTENT + " = '%s', "
                                    + self.COLUME_MOVIE_BOX_VALUE_CONTENT + " = '%s', "
@@ -114,6 +118,7 @@ class MaoYanDetailDB(BaseDB):
                                   + self.COLUME_MOVIE_RELEASE_TIME + ","
                                   + self.COLUME_MOVIE_RELEASE_AREA + ","
                                   + self.COLUME_MOVIE_SCORE_CONTENT + ","
+                                  + self.COLUME_MOVIE_WANT_TO_SEE_COUNT + ","
                                   + self.COLUME_MOVIE_STATS_PEOPLE_COUNT_CONTENT + ","
                                   + self.COLUME_MOVIE_STATS_PEOPLE_COUNT_UNIT_CONTENT + ","
                                   + self.COLUME_MOVIE_BOX_VALUE_CONTENT + ","
@@ -135,6 +140,7 @@ class MaoYanDetailDB(BaseDB):
                           + self.COLUME_MOVIE_RELEASE_TIME + ","
                           + self.COLUME_MOVIE_RELEASE_AREA + ","
                           + self.COLUME_MOVIE_SCORE_CONTENT + ","
+                          + self.COLUME_MOVIE_WANT_TO_SEE_COUNT + ","
                           + self.COLUME_MOVIE_STATS_PEOPLE_COUNT_CONTENT + ","
                           + self.COLUME_MOVIE_STATS_PEOPLE_COUNT_UNIT_CONTENT + ","
                           + self.COLUME_MOVIE_BOX_VALUE_CONTENT + ","
@@ -157,6 +163,7 @@ class MaoYanDetailDB(BaseDB):
             mao_yan_detail_bean['movie_release_time'],
             mao_yan_detail_bean['movie_release_area'],
             mao_yan_detail_bean['movie_score_content'],
+            mao_yan_detail_bean['movie_want_to_see_count'],
             mao_yan_detail_bean['movie_stats_people_count_content'],
             mao_yan_detail_bean['movie_stats_people_count_unit_content'],
             mao_yan_detail_bean['movie_box_value_content'],
@@ -176,6 +183,7 @@ class MaoYanDetailDB(BaseDB):
             mao_yan_detail_bean['movie_release_time'],
             mao_yan_detail_bean['movie_release_area'],
             mao_yan_detail_bean['movie_score_content'],
+            mao_yan_detail_bean['movie_want_to_see_count'],
             mao_yan_detail_bean['movie_stats_people_count_content'],
             mao_yan_detail_bean['movie_stats_people_count_unit_content'],
             mao_yan_detail_bean['movie_box_value_content'],
@@ -208,6 +216,7 @@ class MaoYanDetailDB(BaseDB):
              COLUME_MOVIE_RELEASE_TIME,
              COLUME_MOVIE_RELEASE_AREA,
              COLUME_MOVIE_SCORE_CONTENT,
+             COLUME_MOVIE_WANT_TO_SEE_COUNT,
              COLUME_MOVIE_STATS_PEOPLE_COUNT_CONTENT,
              COLUME_MOVIE_STATS_PEOPLE_COUNT_UNIT_CONTENT,
              COLUME_MOVIE_BOX_VALUE_CONTENT,
@@ -226,6 +235,7 @@ class MaoYanDetailDB(BaseDB):
                                                    COLUME_MOVIE_RELEASE_TIME,
                                                    COLUME_MOVIE_RELEASE_AREA,
                                                    COLUME_MOVIE_SCORE_CONTENT,
+                                                   COLUME_MOVIE_WANT_TO_SEE_COUNT,
                                                    COLUME_MOVIE_STATS_PEOPLE_COUNT_CONTENT,
                                                    COLUME_MOVIE_STATS_PEOPLE_COUNT_UNIT_CONTENT,
                                                    COLUME_MOVIE_BOX_VALUE_CONTENT,
@@ -250,6 +260,7 @@ class MaoYanDetailDB(BaseDB):
              COLUME_MOVIE_RELEASE_TIME,
              COLUME_MOVIE_RELEASE_AREA,
              COLUME_MOVIE_SCORE_CONTENT,
+             COLUME_MOVIE_WANT_TO_SEE_COUNT,
              COLUME_MOVIE_STATS_PEOPLE_COUNT_CONTENT,
              COLUME_MOVIE_STATS_PEOPLE_COUNT_UNIT_CONTENT,
              COLUME_MOVIE_BOX_VALUE_CONTENT,
@@ -268,6 +279,7 @@ class MaoYanDetailDB(BaseDB):
                                                                   COLUME_MOVIE_RELEASE_TIME,
                                                                   COLUME_MOVIE_RELEASE_AREA,
                                                                   COLUME_MOVIE_SCORE_CONTENT,
+                                                                  COLUME_MOVIE_WANT_TO_SEE_COUNT,
                                                                   COLUME_MOVIE_STATS_PEOPLE_COUNT_CONTENT,
                                                                   COLUME_MOVIE_STATS_PEOPLE_COUNT_UNIT_CONTENT,
                                                                   COLUME_MOVIE_BOX_VALUE_CONTENT,

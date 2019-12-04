@@ -15,8 +15,8 @@ if __name__ == "__main__":
     ImageDraw=PIL.ImageDraw
     ImageFont=PIL.ImageFont
 
-    # \ue110.\uf5c5
-    text = "\uf2ce万"
+    # ['\uf7df', '\uf4a6']
+    text = "\uf05b"
     # text = "\uea79\uea79"
     print("__main__::text = ", text)
 

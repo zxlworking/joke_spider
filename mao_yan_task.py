@@ -21,7 +21,7 @@ def start_request_now_mao_yan_task():
     requestMaoYanDetail = RequestMaoYanDetail()
     requestMaoYanDetail.request_now_mao_yan_detail()
 
-    # start()
+    start()
 
 
 if __name__ == '__main__':
