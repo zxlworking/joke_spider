@@ -459,16 +459,48 @@ class RequestMaoYanDetail(BaseRequest):
             # im.show()
             im.save(img_save_name)
 
-            image2 = PIL.Image.open(img_save_name)
-            code = pytesseract.image_to_string(image2)
-            print("get_mao_yan_num_by_object::code = ", code)
+            # image2 = PIL.Image.open(img_save_name)
+            # code = pytesseract.image_to_string(image2, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789')
+            # print("get_mao_yan_num_by_object::code = ", code)
+
+            baidu_token_result = requests.get(
+                'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=Wk03dOF1kRG1SnajCmyKELNx&client_secret=XAqRaMFFCUY2ZUGNSvtGsL8ZYbYRkERp&')
+            # print('baidu_token_result_json = ', baidu_token_result.text)
+            baidu_token_result_json = json.loads(baidu_token_result.text)
+            # print('baidu_token = ', baidu_token_result_json['access_token'])
+
+            with open(img_save_name, 'rb') as f:
+                num_pic_base64 = base64.b64encode(f.read())
+
+            postdata = {'access_token': baidu_token_result_json['access_token'], 'image': num_pic_base64}
+            # result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic', data=postdata)
+            result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic', data=postdata)
+            # result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/webimage', data=postdata)
+            # result =  {"log_id": 2337563219107430326, "words_result_num": 1, "words_result": [{"words": "9.4"}]}
+            print("result = ", result.text, "\n")
+            result_json_object = json.loads(result.text)
+
+            code = ''
+            if 'words_result' in result_json_object:
+                words_result = result_json_object['words_result']
+                if len(words_result) > 0:
+                    words = words_result[0]['words']
+                    words_find_result = re.findall('(\\d+.?\\d+).*?', words, re.S)
+                    if len(words_find_result) > 0:
+                        code = words_find_result[0]
+
+            # print("words = ", words)
+
 
             num_result = num_result + code[0:int(len(code)/2)]
             if index == 2:
                 num_result = num_result + "."
             index = 0
 
+            time.sleep(2)
+
         print("get_mao_yan_num_by_object::num_result = ", num_result)
+        print("\n\n")
         return num_result
 
     def parse_tab_celebrity_list(self, movie_id, tab_celebrity_list_object):
@@ -717,7 +749,7 @@ if __name__ == "__main__":
     # requestMaoYanDetail.parent_path = '../'
     # 267,1250952
     # requestMaoYanDetail.request("267", "https://maoyan.com/films/267")
-    requestMaoYanDetail.request("1211270", "https://maoyan.com/films/1211270")
+    requestMaoYanDetail.request("1258163", "https://maoyan.com/films/1258163")
     # requestMaoYanDetail.request("1211270", "https://passport.meituan.com/account/unitivelogin?service=maoyan&continue=https%3A%2F%2Fmaoyan.com%2Fpassport%2Flogin%3Fredirect%3D%252F")
 
     # new_driver = requestNowMaoYan.get_web_content("file:///home/mi/zxl/workspace/my_github/joke_spider/com_zxl_spider_request/new_maoyan_detail.html")

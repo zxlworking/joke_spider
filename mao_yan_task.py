@@ -25,5 +25,5 @@ def start_request_now_mao_yan_task():
 
 
 if __name__ == '__main__':
-    # start()
-    start_request_now_mao_yan_task()
+    start()
+    # start_request_now_mao_yan_task()
