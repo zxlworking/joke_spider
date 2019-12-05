@@ -63,16 +63,14 @@ class RequestMaoYanDetail(BaseRequest):
             # print("banner_object = ", banner_object)
 
             movie_detail_object = driver.find_element_by_xpath(movie_detail_path)
-            print("movie_detail_object = ", movie_detail_object)
+            # print("movie_detail_object = ", movie_detail_object)
 
-            print("=====start======")
-            woff_url = ''
             find_result = re.findall(r'.*?url\(\'(.*?)\'\).*?', page_content)
             if len(find_result) > 0:
                 for woff_url in find_result:
                     if 'woff' in woff_url:
                         woff_url = "http:" + woff_url
-                        print("woff_url--->", woff_url)
+                        # print("woff_url--->", woff_url)
                         font_request = request.Request(woff_url)
                         font_res = request.urlopen(font_request)
                         font_respoen = font_res.read()
@@ -81,7 +79,6 @@ class RequestMaoYanDetail(BaseRequest):
                         font_file.close()
                         woff_font = TTFont(self.parent_path + "mao_yan_font.woff")
                         woff_font.saveXML(self.parent_path + "mao_yan_font.xml")
-            print("=====end======")
 
             movie_avatar_url = ''
             try:
@@ -141,7 +138,7 @@ class RequestMaoYanDetail(BaseRequest):
                     movie_release_info = movie_brief_info_list_object[2].text
                     movie_release_info_find_result = re.findall('(\\d+.*?\\d+.*?\\d+.*?\\d+.*?\\d+)(.+)',
                                                                 movie_release_info, re.S)
-                    print("movie_release_info_find_result = ", movie_release_info_find_result)
+                    # print("movie_release_info_find_result = ", movie_release_info_find_result)
                     if len(movie_release_info_find_result) > 0 and len(movie_release_info_find_result[0]) > 1:
                         movie_release_time = movie_release_info_find_result[0][0]
                         movie_release_area = movie_release_info_find_result[0][1]
@@ -160,7 +157,8 @@ class RequestMaoYanDetail(BaseRequest):
                 movie_want_to_see_count = movie_want_to_see_count_object.text
                 movie_want_to_see_count = self.get_mao_yan_num_by_object(movie_want_to_see_count, 'mao_yan_font.woff', self.parent_path + "want_to_see.png")
             except NoSuchElementException as no_movie_want_to_see_content_exception:
-                print("no_movie_want_to_see_content_exception = ", no_movie_want_to_see_content_exception)
+                # print("no_movie_want_to_see_content_exception = ", no_movie_want_to_see_content_exception)
+                pass
 
             movie_score_content = ''
             try:
@@ -174,6 +172,7 @@ class RequestMaoYanDetail(BaseRequest):
                 print("no_movie_score_content_exception = ", no_movie_score_content_exception)
 
             if movie_score_content == '-1':
+                print("exit movie_score_content = ", movie_score_content)
                 driver.close()
                 return '-1'
 
@@ -189,10 +188,10 @@ class RequestMaoYanDetail(BaseRequest):
                 # movie_stats_people_count_content = self.get_mao_yan_num(woff_url, movie_stats_people_count_object.text, self.parent_path + "stats_people_count.png")
                 movie_stats_people_count_content = self.get_mao_yan_num_by_object(movie_stats_people_count_object.text, 'mao_yan_font.woff', self.parent_path + "stats_people_count.png")
                 temp_movie_stats_people_count_unit_content = movie_stats_people_count_object.text
-                print("movie_stats_people_count_content = ", movie_stats_people_count_content,
-                      len(movie_stats_people_count_content))
-                print("temp_movie_stats_people_count_unit_content = ", temp_movie_stats_people_count_unit_content,
-                      len(temp_movie_stats_people_count_unit_content))
+                # print("movie_stats_people_count_content = ", movie_stats_people_count_content,
+                #       len(movie_stats_people_count_content))
+                # print("temp_movie_stats_people_count_unit_content = ", temp_movie_stats_people_count_unit_content,
+                #       len(temp_movie_stats_people_count_unit_content))
                 if len(movie_stats_people_count_content) == len(temp_movie_stats_people_count_unit_content):
                     movie_stats_people_count_unit_content = ''
                 else:
@@ -203,6 +202,7 @@ class RequestMaoYanDetail(BaseRequest):
                 print("no_movie_stats_people_count_content_exception = ", no_movie_stats_people_count_content_exception)
 
             if movie_stats_people_count_content == '-1':
+                print("exit movie_stats_people_count_content = ", movie_score_content)
                 driver.close()
                 return '-1'
 
@@ -224,6 +224,7 @@ class RequestMaoYanDetail(BaseRequest):
                 print("no_movie_box_value_content_exception = ", no_movie_box_value_content_exception)
 
             if movie_box_value_content == '-1':
+                print("exit movie_box_value_content = ", movie_score_content)
                 driver.close()
                 return '-1'
 
@@ -244,8 +245,8 @@ class RequestMaoYanDetail(BaseRequest):
             tab_content_detail_list_path = ".//div[@class='module']"
             tab_content_detail_list_object = tab_content_detail_object.find_elements_by_xpath(
                 tab_content_detail_list_path)
-            print("tab_content_detail_list_object = ", len(tab_content_detail_list_object),
-                  tab_content_detail_list_object)
+            # print("tab_content_detail_list_object = ", len(tab_content_detail_list_object),
+            #       tab_content_detail_list_object)
             if len(tab_content_detail_list_object) > 0:
                 introduce_content = ''
                 try:
@@ -284,7 +285,7 @@ class RequestMaoYanDetail(BaseRequest):
                 tab_img_path = ".//div[@class='tab-img tab-content']"
                 tab_img_object = tab_content_object.find_element_by_xpath(tab_img_path)
                 tab_img_list_object = tab_img_object.find_elements_by_xpath(".//li")
-                print("tab_img_list_object = ", len(tab_img_list_object), tab_img_list_object)
+                # print("tab_img_list_object = ", len(tab_img_list_object), tab_img_list_object)
             except NoSuchElementException as no_tab_img_list_object_exception:
                 print("no_tab_img_list_object_exception = ", no_tab_img_list_object_exception)
 
@@ -442,21 +443,21 @@ class RequestMaoYanDetail(BaseRequest):
     #     return words
 
     def get_mao_yan_num_by_object(self, num_content, woff_font_file, img_save_name):
-        print("get_mao_yan_num_by_object::num_content = ", num_content)
-        print("get_mao_yan_num_by_object::woff_font_file = ", woff_font_file)
-        print("get_mao_yan_num_by_object::img_save_name = ", img_save_name)
+        # print("get_mao_yan_num_by_object::num_content = ", num_content)
+        # print("get_mao_yan_num_by_object::woff_font_file = ", woff_font_file)
+        # print("get_mao_yan_num_by_object::img_save_name = ", img_save_name)
 
         if '万' in num_content:
             num_content = num_content[:len(num_content) - 1]
 
         num_content_find_result = num_content.split('.')
-        print("get_mao_yan_num_by_object::num_content_find_result = ", num_content_find_result)
+        # print("get_mao_yan_num_by_object::num_content_find_result = ", num_content_find_result)
 
         num_result = ''
         index = len(num_content_find_result)
         for num_content_item_find_result in num_content_find_result:
             text = num_content_item_find_result
-            print("get_mao_yan_num_by_object::text = ", text)
+            # print("get_mao_yan_num_by_object::text = ", text)
 
             im = PIL.Image.new("RGB", (300, 60), (255, 255, 255))
             dr = PIL.ImageDraw.Draw(im)
@@ -485,7 +486,7 @@ class RequestMaoYanDetail(BaseRequest):
             result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic', data=postdata)
             # result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/webimage', data=postdata)
             # result =  {"log_id": 2337563219107430326, "words_result_num": 1, "words_result": [{"words": "9.4"}]}
-            print("result = ", result.text, "\n")
+            # print("result = ", result.text, "\n")
             result_json_object = json.loads(result.text)
 
             code = ''
@@ -507,19 +508,19 @@ class RequestMaoYanDetail(BaseRequest):
 
             time.sleep(2)
 
-        print("get_mao_yan_num_by_object::num_result = ", num_result)
-        print("\n\n")
+        # print("get_mao_yan_num_by_object::num_result = ", num_result)
+        # print("\n\n")
         return num_result
 
     def parse_tab_celebrity_list(self, movie_id, tab_celebrity_list_object):
         if tab_celebrity_list_object is not None:
-            print("tab_celebrity_list_object = ", len(tab_celebrity_list_object), tab_celebrity_list_object)
+            # print("tab_celebrity_list_object = ", len(tab_celebrity_list_object), tab_celebrity_list_object)
 
             mao_yan_celebrity_db = MaoYanCelebrityDB()
             mao_yan_celebrity_db.delete_by_movie_id(movie_id)
 
             for tab_celebrity_item_object in tab_celebrity_list_object:
-                print('tab_celebrity_item_object==================>')
+                # print('tab_celebrity_item_object==================>')
                 # print(tab_celebrity_item_object.get_attribute('innerHTML'))
                 celebrity_type_path = ".//div[@class='celebrity-type']"
                 celebrity_type_object = tab_celebrity_item_object.find_element_by_xpath(celebrity_type_path)
@@ -545,16 +546,16 @@ class RequestMaoYanDetail(BaseRequest):
                 # if len(find_celebrity_type_value_result) > 0:
                 #     celebrity_type_value = find_celebrity_type_value_result[0]
 
-                print("celebrity_type_name = ", celebrity_type_name)
+                # print("celebrity_type_name = ", celebrity_type_name)
                 # print("celebrity_type_value = ", celebrity_type_value)
-                print('\n')
+                # print('\n')
 
                 celebrity_list_path = ".//ul[@class='celebrity-list clearfix']"
                 celebrity_list_object = tab_celebrity_item_object.find_elements_by_xpath(celebrity_list_path)
                 celebrity_list_object = tab_celebrity_item_object.find_elements_by_xpath(".//li")
-                print("celebrity_list_object = ", len(celebrity_list_object), tab_celebrity_list_object)
+                # print("celebrity_list_object = ", len(celebrity_list_object), tab_celebrity_list_object)
                 for celebrity_item_object in celebrity_list_object:
-                    print('celebrity_item_object==================>')
+                    # print('celebrity_item_object==================>')
                     celebrity_detail_path = ".//a[@class='portrait']"
                     celebrity_detail_object = celebrity_item_object.find_element_by_xpath(celebrity_detail_path)
                     celebrity_detail_url = celebrity_detail_object.get_attribute("href")
@@ -574,13 +575,14 @@ class RequestMaoYanDetail(BaseRequest):
                         if celebrity_role_object is not None:
                             celebrity_role_name = celebrity_role_object.get_attribute('innerHTML')
                     except NoSuchElementException as no_celebrity_role_exception:
-                        print("no_celebrity_role_exception = ", no_celebrity_role_exception)
+                        # print("no_celebrity_role_exception = ", no_celebrity_role_exception)
+                        pass
 
-                    print("celebrity_name = ", celebrity_name)
-                    print("celebrity_role_name = ", celebrity_role_name)
-                    print("celebrity_head_img = ", celebrity_head_img)
-                    print("celebrity_detail_url = ", celebrity_detail_url)
-                    print('\n')
+                    # print("celebrity_name = ", celebrity_name)
+                    # print("celebrity_role_name = ", celebrity_role_name)
+                    # print("celebrity_head_img = ", celebrity_head_img)
+                    # print("celebrity_detail_url = ", celebrity_detail_url)
+                    # print('\n')
 
                     mao_yan_celebrity_bean = MaoYanCelebrityBean()
                     mao_yan_celebrity_bean = mao_yan_celebrity_bean.create_bean('-1',
@@ -596,7 +598,7 @@ class RequestMaoYanDetail(BaseRequest):
 
     def parse_tab_award_list(self, movie_id, tab_award_list_object):
         if tab_award_list_object is not None:
-            print("tab_award_list_object = ", len(tab_award_list_object), tab_award_list_object)
+            # print("tab_award_list_object = ", len(tab_award_list_object), tab_award_list_object)
 
             mao_yan_award_db = MaoYanAwardDB()
             mao_yan_award_db.delete_by_movie_id(movie_id)
@@ -624,11 +626,11 @@ class RequestMaoYanDetail(BaseRequest):
                     award_content = award_content + award_content_item_object.get_attribute('innerHTML') + "\n"
                 award_content = award_content.replace(' ', "")
 
-                print("award_title = ", award_title)
-                print("award_content = ")
-                print(award_content)
-                print("award_img = ", award_img)
-                print('\n')
+                # print("award_title = ", award_title)
+                # print("award_content = ")
+                # print(award_content)
+                # print("award_img = ", award_img)
+                # print('\n')
 
                 mao_yan_award_bean = MaoYanAwardBean()
                 mao_yan_award_bean = mao_yan_award_bean.create_bean('-1',
@@ -642,7 +644,7 @@ class RequestMaoYanDetail(BaseRequest):
 
     def parse_tab_img_list(self, movie_id, tab_img_list_object):
         if tab_img_list_object is not None:
-            print("tab_img_list_object = ", len(tab_img_list_object), tab_img_list_object)
+            # print("tab_img_list_object = ", len(tab_img_list_object), tab_img_list_object)
 
             mao_yan_img_collection_db = MaoYanImgCollectionDB()
             mao_yan_img_collection_db.delete_by_movie_id(movie_id)
@@ -657,7 +659,7 @@ class RequestMaoYanDetail(BaseRequest):
 
                 if '@' in tab_img:
                     tab_img = tab_img.split('@')[0]
-                print("tab_img = ", tab_img)
+                # print("tab_img = ", tab_img)
 
                 mao_yan_img_collection_bean = MaoYanImgCollectionBean()
                 mao_yan_img_collection_bean = mao_yan_img_collection_bean.create_bean('-1',
@@ -669,13 +671,13 @@ class RequestMaoYanDetail(BaseRequest):
 
     def parse_comment_list(self, movie_id, comment_list_object):
         if comment_list_object is not None:
-            print("comment_list_object = ", len(comment_list_object), comment_list_object)
+            # print("comment_list_object = ", len(comment_list_object), comment_list_object)
 
             mao_yan_comment_db = MaoYanCommentDB()
             mao_yan_comment_db.delete_by_movie_id(movie_id)
 
             for comment_item_object in comment_list_object:
-                print('comment_item_object==================>')
+                # print('comment_item_object==================>')
                 # print(comment_item_object.get_attribute('innerHTML'))
                 comment_user_head_path = ".//div[@class='portrait-container']"
                 comment_user_head_object = comment_item_object.find_element_by_xpath(comment_user_head_path)
@@ -700,12 +702,12 @@ class RequestMaoYanDetail(BaseRequest):
                 comment_content_object = comment_item_object.find_element_by_xpath(comment_content_path)
                 comment_content = comment_content_object.text
 
-                print("comment_user_name = ", comment_user_name)
-                print("comment_user_head_img = ", comment_user_head_img)
-                print("comment_content = ", comment_content)
-                print("comment_time = ", comment_time)
-                print("comment_approve_num = ", comment_approve_num)
-                print('\n')
+                # print("comment_user_name = ", comment_user_name)
+                # print("comment_user_head_img = ", comment_user_head_img)
+                # print("comment_content = ", comment_content)
+                # print("comment_time = ", comment_time)
+                # print("comment_approve_num = ", comment_approve_num)
+                # print('\n')
 
                 mao_yan_comment_bean = MaoYanCommentBean()
                 mao_yan_comment_bean = mao_yan_comment_bean.create_bean('-1',
@@ -740,8 +742,9 @@ class RequestMaoYanDetail(BaseRequest):
         mao_yan_now_db.close_db()
         # i = 0
         for mao_yan_bean in mao_yan_bean_list:
+            print("request_now_mao_yan_detail::movie_id = ", mao_yan_bean['movie_id'])
             result = self.request(mao_yan_bean['movie_id'], mao_yan_bean['movie_detail_url'])
-            print("request_now_mao_yan_detail::movie_id = ", mao_yan_bean['movie_id'], "::result = ", result)
+            print("request_now_mao_yan_detail::result = ", result)
             # i = i + 1
             # if i == 1:
             #     break

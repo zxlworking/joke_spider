@@ -68,7 +68,7 @@ class RequestMaoYan(BaseRequest):
 
             print("movie_id = %s" % movie_id)
             print("movie_title = %s" % movie_title)
-            print("movie_poster_url = %s" % movie_poster_url)
+            # print("movie_poster_url = %s" % movie_poster_url)
             print("movie_detail_url = %s" % movie_detail_url)
 
             mao_yan_bean = MaoYanBean()
