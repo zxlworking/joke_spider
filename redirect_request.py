@@ -60,7 +60,7 @@ def response(flow):
     #     print(flow.response.text)
 
     # if 'bs/yoda-static' in flow.request.url:
-    print("response = ", flow.response.text)
+    # print("response = ", flow.response.text)
 
     """修改应答数据"""
     # 屏蔽selenium检测

@@ -64,23 +64,23 @@ class BaseDB:
             print("OK")
 
     def query(self, sql_str):
-        print("query::", sql_str)
+        # print("query::", sql_str)
         cursor.execute(sql_str)
         return cursor
 
     def insert(self, sql_str, param):
-        print("insert::", sql_str)
-        print(param)
+        # print("insert::", sql_str)
+        # print(param)
         cursor.execute(sql_str, param)
         cnx.commit()
 
     def update(self, sql_str):
-        print("update::", sql_str)
+        # print("update::", sql_str)
         cursor.execute(sql_str)
         cnx.commit()
 
     def delete(self, sql_str):
-        print("update::", sql_str)
+        # print("update::", sql_str)
         cursor.execute(sql_str)
         cnx.commit()
 

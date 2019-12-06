@@ -164,6 +164,7 @@ class RequestMaoYanDetail(BaseRequest):
             try:
                 movie_score_path = ".//span[@class='index-left info-num ']"
                 movie_score_object = movie_stats_object.find_element_by_xpath(movie_score_path)
+                print("movie_score_object.innerHTML = ", movie_score_object.get_attribute('innerHTML'))
                 movie_score_content_path = ".//span"
                 movie_score_content_object = movie_score_object.find_element_by_xpath(movie_score_content_path)
                 # movie_score_content = self.get_mao_yan_num(woff_url, movie_score_content_object.text, self.parent_path + "score.png")
@@ -443,27 +444,27 @@ class RequestMaoYanDetail(BaseRequest):
     #     return words
 
     def get_mao_yan_num_by_object(self, num_content, woff_font_file, img_save_name):
-        # print("get_mao_yan_num_by_object::num_content = ", num_content)
-        # print("get_mao_yan_num_by_object::woff_font_file = ", woff_font_file)
-        # print("get_mao_yan_num_by_object::img_save_name = ", img_save_name)
+        print("get_mao_yan_num_by_object::num_content = ", num_content)
+        print("get_mao_yan_num_by_object::woff_font_file = ", woff_font_file)
+        print("get_mao_yan_num_by_object::img_save_name = ", img_save_name)
 
         if '万' in num_content:
             num_content = num_content[:len(num_content) - 1]
 
         num_content_find_result = num_content.split('.')
-        # print("get_mao_yan_num_by_object::num_content_find_result = ", num_content_find_result)
+        print("get_mao_yan_num_by_object::num_content_find_result = ", num_content_find_result)
 
         num_result = ''
         index = len(num_content_find_result)
         for num_content_item_find_result in num_content_find_result:
             text = num_content_item_find_result
-            # print("get_mao_yan_num_by_object::text = ", text)
+            print("get_mao_yan_num_by_object::text = ", text)
 
             im = PIL.Image.new("RGB", (300, 60), (255, 255, 255))
             dr = PIL.ImageDraw.Draw(im)
             font = PIL.ImageFont.truetype(os.path.join(woff_font_file), 30)
 
-            dr.text((10, 15), text + text + text + text, font=font, fill="#000000")
+            dr.text((10, 15), text + text, font=font, fill="#000000")
 
             # im.show()
             im.save(img_save_name)
@@ -486,22 +487,18 @@ class RequestMaoYanDetail(BaseRequest):
             result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic', data=postdata)
             # result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/webimage', data=postdata)
             # result =  {"log_id": 2337563219107430326, "words_result_num": 1, "words_result": [{"words": "9.4"}]}
-            # print("result = ", result.text, "\n")
+            print("result = ", result.text, "\n")
             result_json_object = json.loads(result.text)
 
             code = ''
             if 'words_result' in result_json_object:
                 words_result = result_json_object['words_result']
                 if len(words_result) > 0:
-                    words = words_result[0]['words']
-                    words_find_result = re.findall('(\\d+.?\\d+).*?', words, re.S)
-                    if len(words_find_result) > 0:
-                        code = words_find_result[0]
+                    code = words_result[0]['words']
 
             # print("words = ", words)
 
-
-            num_result = num_result + code[0:int(len(code) / 4)]
+            num_result = num_result + code[0:int(len(code) / 2)]
             if index == 2:
                 num_result = num_result + "."
             index = 0
