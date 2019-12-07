@@ -463,19 +463,21 @@ class RequestMaoYanDetail(BaseRequest):
                 num_content_find_result = num_content.split('.')
                 print("get_mao_yan_num_by_object::num_content_find_result = ", num_content_find_result)
         else:
-            num_content_find_result = num_content
+            num_content_find_result = num_content.split('.')
 
         num_result = ''
         index = len(num_content_find_result)
         for num_content_item_find_result in num_content_find_result:
             text = num_content_item_find_result
-            print("get_mao_yan_num_by_object::text = ", text)
+            print("get_mao_yan_num_by_object::text =",text,"---")
 
             im = PIL.Image.new("RGB", (300, 60), (255, 255, 255))
             dr = PIL.ImageDraw.Draw(im)
             font = PIL.ImageFont.truetype(os.path.join(woff_font_file), 30)
 
+            print("start draw text img")
             dr.text((10, 15), text + text, font=font, fill="#000000")
+            print("end draw text img")
 
             # im.show()
             im.save(img_save_name)
