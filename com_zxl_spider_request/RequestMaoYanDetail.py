@@ -472,7 +472,9 @@ class RequestMaoYanDetail(BaseRequest):
             print("get_mao_yan_num_by_object::text =",text,"---")
 
             im = PIL.Image.new("RGB", (300, 60), (255, 255, 255))
+            print("start draw text img 0")
             dr = PIL.ImageDraw.Draw(im)
+            print("start draw text img 1")
             font = PIL.ImageFont.truetype(os.path.join(woff_font_file), 30)
 
             print("start draw text img")
