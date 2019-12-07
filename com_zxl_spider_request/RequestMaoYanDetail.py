@@ -454,7 +454,8 @@ class RequestMaoYanDetail(BaseRequest):
         if '.' in num_content:
             num_content_find_result = num_content.split('.')
             print("get_mao_yan_num_by_object::len(num_content_find_result) = ", len(num_content_find_result))
-            while len(num_content_find_result) < 2:
+            print("get_mao_yan_num_by_object::num_content_find_result[0] = ", (num_content_find_result[0] == ''))
+            while num_content_find_result[0] == '':
                 num_content = element_object.text
                 if '万' in num_content:
                     num_content = num_content[:len(num_content) - 1]
