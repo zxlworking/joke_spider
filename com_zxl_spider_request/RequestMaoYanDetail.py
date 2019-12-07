@@ -154,8 +154,7 @@ class RequestMaoYanDetail(BaseRequest):
                 movie_want_to_see_content_object = movie_stats_object.find_element_by_xpath(movie_want_to_see_content_path)
                 movie_want_to_see_count_path = ".//span"
                 movie_want_to_see_count_object = movie_want_to_see_content_object.find_element_by_xpath(movie_want_to_see_count_path)
-                movie_want_to_see_count = movie_want_to_see_count_object.text
-                movie_want_to_see_count = self.get_mao_yan_num_by_object(movie_want_to_see_count, 'mao_yan_font.woff', self.parent_path + "want_to_see.png")
+                movie_want_to_see_count = self.get_mao_yan_num_by_object(movie_want_to_see_count_object, 'mao_yan_font.woff', self.parent_path + "want_to_see.png")
             except NoSuchElementException as no_movie_want_to_see_content_exception:
                 # print("no_movie_want_to_see_content_exception = ", no_movie_want_to_see_content_exception)
                 pass
@@ -168,7 +167,7 @@ class RequestMaoYanDetail(BaseRequest):
                 movie_score_content_path = ".//span"
                 movie_score_content_object = movie_score_object.find_element_by_xpath(movie_score_content_path)
                 # movie_score_content = self.get_mao_yan_num(woff_url, movie_score_content_object.text, self.parent_path + "score.png")
-                movie_score_content = self.get_mao_yan_num_by_object(movie_score_content_object.text, 'mao_yan_font.woff', self.parent_path + "score.png")
+                movie_score_content = self.get_mao_yan_num_by_object(movie_score_content_object, 'mao_yan_font.woff', self.parent_path + "score.png")
             except NoSuchElementException as no_movie_score_content_exception:
                 print("no_movie_score_content_exception = ", no_movie_score_content_exception)
 
@@ -187,7 +186,7 @@ class RequestMaoYanDetail(BaseRequest):
                 movie_stats_people_count_object = movie_stats_people_count_parent_object.find_element_by_xpath(
                     movie_stats_people_count_path)
                 # movie_stats_people_count_content = self.get_mao_yan_num(woff_url, movie_stats_people_count_object.text, self.parent_path + "stats_people_count.png")
-                movie_stats_people_count_content = self.get_mao_yan_num_by_object(movie_stats_people_count_object.text, 'mao_yan_font.woff', self.parent_path + "stats_people_count.png")
+                movie_stats_people_count_content = self.get_mao_yan_num_by_object(movie_stats_people_count_object, 'mao_yan_font.woff', self.parent_path + "stats_people_count.png")
                 temp_movie_stats_people_count_unit_content = movie_stats_people_count_object.text
                 # print("movie_stats_people_count_content = ", movie_stats_people_count_content,
                 #       len(movie_stats_people_count_content))
@@ -216,7 +215,7 @@ class RequestMaoYanDetail(BaseRequest):
                 movie_box_value_path = ".//span[@class='stonefont']"
                 movie_box_value_object = movie_box_object.find_element_by_xpath(movie_box_value_path)
                 # movie_box_value_content = self.get_mao_yan_num(woff_url, movie_box_value_object.text, self.parent_path + "box.png")
-                movie_box_value_content = self.get_mao_yan_num_by_object(movie_box_value_object.text, 'mao_yan_font.woff', self.parent_path + "box.png")
+                movie_box_value_content = self.get_mao_yan_num_by_object(movie_box_value_object, 'mao_yan_font.woff', self.parent_path + "box.png")
 
                 movie_box_unit_path = ".//span[@class='unit']"
                 movie_box_unit_object = movie_box_object.find_element_by_xpath(movie_box_unit_path)
@@ -443,16 +442,27 @@ class RequestMaoYanDetail(BaseRequest):
     #
     #     return words
 
-    def get_mao_yan_num_by_object(self, num_content, woff_font_file, img_save_name):
-        print("get_mao_yan_num_by_object::num_content = ", num_content)
+    def get_mao_yan_num_by_object(self, element_object, woff_font_file, img_save_name):
+        print("get_mao_yan_num_by_object::element_object = ", element_object)
         print("get_mao_yan_num_by_object::woff_font_file = ", woff_font_file)
         print("get_mao_yan_num_by_object::img_save_name = ", img_save_name)
 
+        num_content = element_object.text
         if '万' in num_content:
             num_content = num_content[:len(num_content) - 1]
 
-        num_content_find_result = num_content.split('.')
-        print("get_mao_yan_num_by_object::num_content_find_result = ", num_content_find_result)
+        if '.' in num_content:
+            num_content_find_result = num_content.split('.')
+            print("get_mao_yan_num_by_object::len(num_content_find_result) = ", len(num_content_find_result))
+            while len(num_content_find_result) < 2:
+                num_content = element_object.text
+                if '万' in num_content:
+                    num_content = num_content[:len(num_content) - 1]
+
+                num_content_find_result = num_content.split('.')
+                print("get_mao_yan_num_by_object::num_content_find_result = ", num_content_find_result)
+        else:
+            num_content_find_result = num_content
 
         num_result = ''
         index = len(num_content_find_result)
