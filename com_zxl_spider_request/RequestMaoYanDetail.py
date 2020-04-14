@@ -13,11 +13,13 @@ import requests
 from fontTools.ttLib import TTFont
 from pytesseract import pytesseract
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
+from com_zxl_knn_font.knn_font import classifyPerson
 from com_zxl_spider_data.MaoYanAwardBean import MaoYanAwardBean
 from com_zxl_spider_data.MaoYanCelebrityBean import MaoYanCelebrityBean
 from com_zxl_spider_data.MaoYanCommentBean import MaoYanCommentBean
@@ -39,6 +41,8 @@ class RequestMaoYanDetail(BaseRequest):
 
     parent_path = ''
 
+    font_dict = {}
+
     def __init__(self):
         pass
 
@@ -55,6 +59,28 @@ class RequestMaoYanDetail(BaseRequest):
 
         page_content = driver.page_source
         # print(page_content)
+
+        # box_wrapper_path = "//div[@class='box-wrapper ']"
+        # box_wrapper_object = WebDriverWait(driver, 60).until(expected_conditions.presence_of_element_located((By.XPATH, box_wrapper_path)))
+        # print("box_wrapper_object = ", box_wrapper_object)
+        #
+        # if box_wrapper_object is not None:
+        #     # print("box_wrapper_object.get_attribute = ", box_wrapper_object.get_attribute('outerHTML'))
+        #     boxStatic_path = "//div[@class='boxStatic ']"
+        #     boxStatic_object = box_wrapper_object.find_element_by_xpath(boxStatic_path)
+        #
+        #     moveingBar_path = "//div[@class='moveingBar ']"
+        #     moveingBar_object = box_wrapper_object.find_element_by_xpath(moveingBar_path)
+        #
+        #     ActionChains(driver).click_and_hold(boxStatic_object).perform()
+        #     while True:
+        #         try:
+        #             ActionChains(driver).move_by_offset(50, 0).perform()
+        #             # print("boxStatic_object.get_attribute = ", boxStatic_object.get_attribute('style'))
+        #             # print("moveingBar_object.get_attribute = ", moveingBar_object.get_attribute('style'))
+        #             print("box_wrapper_object.get_attribute = ", box_wrapper_object.get_attribute('outerHTML'))
+        #         except NoSuchElementException as no_box_wrapper_exception:
+        #             print("no_box_wrapper_exception = ", no_box_wrapper_exception)
 
         try:
             movie_detail_path = "//div[@class='banner']"
@@ -79,6 +105,16 @@ class RequestMaoYanDetail(BaseRequest):
                         font_file.close()
                         woff_font = TTFont(self.parent_path + "mao_yan_font.woff")
                         woff_font.saveXML(self.parent_path + "mao_yan_font.xml")
+
+                        base_font = TTFont(self.parent_path + 'mao_yan_font.woff')
+                        base_list = base_font.getGlyphOrder()[2:]
+
+                        for font in base_list:
+                            coordinate = base_font['glyf'][font].coordinates
+                            font_0 = [i for item in coordinate for i in item]
+                            # print(font_0)
+                            self.font_dict[font] = classifyPerson(font_0)
+                        print("font_dict = ", self.font_dict)
 
             movie_avatar_url = ''
             try:
@@ -155,8 +191,11 @@ class RequestMaoYanDetail(BaseRequest):
                 movie_want_to_see_count_path = ".//span"
                 movie_want_to_see_count_object = movie_want_to_see_content_object.find_element_by_xpath(movie_want_to_see_count_path)
                 movie_want_to_see_count = self.get_mao_yan_num_by_object(movie_want_to_see_count_object, 'mao_yan_font.woff', self.parent_path + "want_to_see.png")
+                for font_content_item in movie_want_to_see_count_object:
+                    print("zxl--->font_content_item--->"+font_content_item)
+                    print("zxl--->font_dict.get--->"+self.font_dict.get(font_content_item))
             except NoSuchElementException as no_movie_want_to_see_content_exception:
-                # print("no_movie_want_to_see_content_exception = ", no_movie_want_to_see_content_exception)
+                print("no_movie_want_to_see_content_exception = ", no_movie_want_to_see_content_exception)
                 pass
 
             movie_score_content = ''
@@ -448,81 +487,115 @@ class RequestMaoYanDetail(BaseRequest):
         print("get_mao_yan_num_by_object::img_save_name = ", img_save_name)
 
         num_content = element_object.text
-        if '万' in num_content:
-            num_content = num_content[:len(num_content) - 1]
 
-        if '.' in num_content:
-            num_content_find_result = num_content.split('.')
-            print("get_mao_yan_num_by_object::len(num_content_find_result) = ", len(num_content_find_result))
-            print("get_mao_yan_num_by_object::num_content_find_result[0] = ", (num_content_find_result[0] == ''))
-            while num_content_find_result[0] == '':
-                num_content = element_object.text
-                if '万' in num_content:
-                    num_content = num_content[:len(num_content) - 1]
+        has_wan = False
+        if num_content.endswith("万"):
+            num_content = num_content.replace("万", "")
+            has_wan = True
 
-                num_content_find_result = num_content.split('.')
-                print("get_mao_yan_num_by_object::num_content_find_result = ", num_content_find_result)
-        else:
-            num_content_find_result = num_content.split('.')
+        num_content = num_content.encode("unicode-escape").decode()
+        print("zxl--->num_content--->", num_content)
 
-        num_result = ''
-        index = len(num_content_find_result)
-        for num_content_item_find_result in num_content_find_result:
-            text = num_content_item_find_result
-            print("get_mao_yan_num_by_object::text =",text,"---")
+        num_content_array = num_content.split('\\u')
+        print("zxl--->num_content_array--->", num_content_array)
 
-            im = PIL.Image.new("RGB", (300, 60), (255, 255, 255))
-            print("start draw text img 0")
-            dr = PIL.ImageDraw.Draw(im)
-            print("start draw text img 1")
-            font = PIL.ImageFont.truetype(os.path.join(woff_font_file), 30)
+        num_content_str = ''
+        for font_content_item in num_content_array:
+            if font_content_item != '':
+                has_point = False
+                if font_content_item.endswith("."):
+                    font_content_item = font_content_item.replace(".", "")
+                    has_point = True
 
-            print("start draw text img")
-            dr.text((10, 15), text + text, font=font, fill="#000000")
-            print("end draw text img")
+                print("zxl--->font_content_item--->", font_content_item)
 
-            # im.show()
-            im.save(img_save_name)
+                temp_key = 'uni' + font_content_item.upper()
+                print("zxl--->temp_key--->", temp_key)
+                print("zxl--->font_dict.get--->", self.font_dict.get(temp_key))
 
-            # image2 = PIL.Image.open(img_save_name)
-            # code = pytesseract.image_to_string(image2, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789')
-            # print("get_mao_yan_num_by_object::code = ", code)
+                num_content_str = num_content_str + str(self.font_dict.get(temp_key))
+                if has_point:
+                    num_content_str = num_content_str + "."
 
-            baidu_token_result = requests.get(
-                'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=Wk03dOF1kRG1SnajCmyKELNx&client_secret=XAqRaMFFCUY2ZUGNSvtGsL8ZYbYRkERp&')
-            # print('baidu_token_result_json = ', baidu_token_result.text)
-            baidu_token_result_json = json.loads(baidu_token_result.text)
-            # print('baidu_token = ', baidu_token_result_json['access_token'])
+        if has_wan:
+            num_content_str = num_content_str + "万"
 
-            with open(img_save_name, 'rb') as f:
-                num_pic_base64 = base64.b64encode(f.read())
-
-            postdata = {'access_token': baidu_token_result_json['access_token'], 'image': num_pic_base64}
-            # result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic', data=postdata)
-            result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic', data=postdata)
-            # result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/webimage', data=postdata)
-            # result =  {"log_id": 2337563219107430326, "words_result_num": 1, "words_result": [{"words": "9.4"}]}
-            print("result = ", result.text, "\n")
-            result_json_object = json.loads(result.text)
-
-            code = ''
-            if 'words_result' in result_json_object:
-                words_result = result_json_object['words_result']
-                if len(words_result) > 0:
-                    code = words_result[0]['words']
-
-            # print("words = ", words)
-
-            num_result = num_result + code[0:int(len(code) / 2)]
-            if index == 2:
-                num_result = num_result + "."
-            index = 0
-
-            time.sleep(2)
+        return num_content_str
+        # if '万' in num_content:
+        #     num_content = num_content[:len(num_content) - 1]
+        #
+        # if '.' in num_content:
+        #     num_content_find_result = num_content.split('.')
+        #     print("get_mao_yan_num_by_object::len(num_content_find_result) = ", len(num_content_find_result))
+        #     print("get_mao_yan_num_by_object::num_content_find_result[0] = ", (num_content_find_result[0] == ''))
+        #     while num_content_find_result[0] == '':
+        #         num_content = element_object.text
+        #         if '万' in num_content:
+        #             num_content = num_content[:len(num_content) - 1]
+        #
+        #         num_content_find_result = num_content.split('.')
+        #         print("get_mao_yan_num_by_object::num_content_find_result = ", num_content_find_result)
+        # else:
+        #     num_content_find_result = num_content.split('.')
+        #
+        # num_result = ''
+        # index = len(num_content_find_result)
+        # for num_content_item_find_result in num_content_find_result:
+        #     text = num_content_item_find_result
+        #     print("get_mao_yan_num_by_object::text =",text,"---")
+        #
+        #     im = PIL.Image.new("RGB", (300, 60), (255, 255, 255))
+        #     print("start draw text img 0")
+        #     dr = PIL.ImageDraw.Draw(im)
+        #     print("start draw text img 1")
+        #     font = PIL.ImageFont.truetype(os.path.join(woff_font_file), 30)
+        #
+        #     print("start draw text img")
+        #     dr.text((10, 15), text + text, font=font, fill="#000000")
+        #     print("end draw text img")
+        #
+        #     # im.show()
+        #     im.save(img_save_name)
+        #
+        #     # image2 = PIL.Image.open(img_save_name)
+        #     # code = pytesseract.image_to_string(image2, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789')
+        #     # print("get_mao_yan_num_by_object::code = ", code)
+        #
+        #     baidu_token_result = requests.get(
+        #         'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=Wk03dOF1kRG1SnajCmyKELNx&client_secret=XAqRaMFFCUY2ZUGNSvtGsL8ZYbYRkERp&')
+        #     # print('baidu_token_result_json = ', baidu_token_result.text)
+        #     baidu_token_result_json = json.loads(baidu_token_result.text)
+        #     # print('baidu_token = ', baidu_token_result_json['access_token'])
+        #
+        #     with open(img_save_name, 'rb') as f:
+        #         num_pic_base64 = base64.b64encode(f.read())
+        #
+        #     postdata = {'access_token': baidu_token_result_json['access_token'], 'image': num_pic_base64}
+        #     # result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic', data=postdata)
+        #     result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic', data=postdata)
+        #     # result = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/webimage', data=postdata)
+        #     # result =  {"log_id": 2337563219107430326, "words_result_num": 1, "words_result": [{"words": "9.4"}]}
+        #     print("result = ", result.text, "\n")
+        #     result_json_object = json.loads(result.text)
+        #
+        #     code = ''
+        #     if 'words_result' in result_json_object:
+        #         words_result = result_json_object['words_result']
+        #         if len(words_result) > 0:
+        #             code = words_result[0]['words']
+        #
+        #     # print("words = ", words)
+        #
+        #     num_result = num_result + code[0:int(len(code) / 2)]
+        #     if index == 2:
+        #         num_result = num_result + "."
+        #     index = 0
+        #
+        #     time.sleep(2)
 
         # print("get_mao_yan_num_by_object::num_result = ", num_result)
         # print("\n\n")
-        return num_result
+        return ""
 
     def parse_tab_celebrity_list(self, movie_id, tab_celebrity_list_object):
         if tab_celebrity_list_object is not None:
@@ -771,8 +844,8 @@ if __name__ == "__main__":
     requestMaoYanDetail = RequestMaoYanDetail()
     # requestMaoYanDetail.parent_path = '../'
     # 267,1250952
-    # requestMaoYanDetail.request("267", "https://maoyan.com/films/267")
-    requestMaoYanDetail.request("1258163", "https://maoyan.com/films/1258163")
+    requestMaoYanDetail.request("1211270", "https://maoyan.com/films/1211270")
+    # requestMaoYanDetail.request("1258163", "https://maoyan.com/films/1258163")
     # requestMaoYanDetail.request("1211270", "https://passport.meituan.com/account/unitivelogin?service=maoyan&continue=https%3A%2F%2Fmaoyan.com%2Fpassport%2Flogin%3Fredirect%3D%252F")
 
     # new_driver = requestNowMaoYan.get_web_content("file:///home/mi/zxl/workspace/my_github/joke_spider/com_zxl_spider_request/new_maoyan_detail.html")

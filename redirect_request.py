@@ -15,16 +15,21 @@ def request(flow):
     sys_str = platform.system()
     if sys_str == 'Darwin':
         flow.request.headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36'
-        flow.request.headers['Accept-Language'] = 'zh-CN,zh;q=0.9'
     elif sys_str == 'Windows':
         pass
     elif sys_str == 'Linux':
-        flow.request.headers['User-Agent'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'
-        flow.request.headers['Accept-Language'] = 'zh-CN,zh;q=0.9'
+        flow.request.headers['User-Agent'] = 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Mobile Safari/537.36'
 
-    if flow.request.url == 'https://maoyan.com/films?showType=1':
-        print("request url = ", flow.request.url)
-        print("request headers = ", flow.request.headers)
+    # flow.request.headers['Accept-Language'] = 'zh-CN,zh;q=0.9,en;q=0.8'
+    # flow.request.headers['Accept-Encoding'] = 'gzip, deflate'
+    # flow.request.headers['Cache-Control'] = 'max-age=0'
+    # flow.request.headers['Cookie'] = '_lxsdk_cuid=16c46760461c8-0b7dad8fe0c1ba-3f75065b-1fa400-16c46760461c8; iuuid=696E8210DB7411E99D75E3DD995277BC5E0CA61B5E9C495591E1DAA26C10213B; ci=55%2C%E5%8D%97%E4%BA%AC; __mta=252518070.1564550264183.1575345819156.1575345940846.56; _lx_utm=utm_source%3Dgoogle%26utm_medium%3Dorganic; Hm_lvt_703e94591e87be68cc8da0da7cbd0be2=1586770524; __mta=252518070.1564550264183.1575594197141.1586770557358.79; webp=true; _lxsdk=19749EA07D6A11EA8C9A81FBF6E90933C386E56DAF7B435FA6E8C1646D4F7437; Hm_lpvt_703e94591e87be68cc8da0da7cbd0be2=1586773113; _lxsdk_s=17172e4b7dd-aa5-886-c7e%7C%7C30'
+
+    print("request url = ", flow.request.url)
+    print("request method = ", flow.request.method)
+    print("request headers = ", flow.request.headers)
+    # if flow.request.url.startswith('https://maoyan.com'):
+    #     print("request headers = ", flow.request.headers)
     # if 'bs/yoda-static/file' in flow.request.url:
     #     print('*' * 100)
     #     print(flow.request.url)
@@ -38,7 +43,7 @@ def request(flow):
 
 
 def response(flow):
-    # print("response = ", flow.response.text)
+    print("response = ", flow.response.text)
     # if 'webdriver' in flow.response.text:
     #     print('*' * 100)
     #     print('find web_driver key')
@@ -51,7 +56,7 @@ def response(flow):
     #     print('*' * 100)
     #     print('find web_driver key')
     #     flow.response.text = flow.response.text.replace("WEBDRIVER", "fuck_that_3")
-    pass
+    # pass
 
     # print("response url = ", flow.request.url)
     # print("response url \n\n\n")
